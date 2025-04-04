@@ -1,3 +1,5 @@
+// `mod` is NOT an include or import but a declaration stating that a module exists.
+// The definition can be inline using {} OR in a subdirectory containing a mod.rs file.
 mod render;
 
 // `crate::` is the starting point for paths pointing to modules in the current crate.
