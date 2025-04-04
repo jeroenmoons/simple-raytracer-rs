@@ -1,7 +1,7 @@
 mod render;
 
 // `crate::` is the starting point for paths pointing to modules in the current crate
-use crate::render::pathtracer;
+use crate::render::pathtracer::PathTracer;
 // Clap is used to define the cli declaratively
 use clap::{Parser, Subcommand};
 
@@ -36,7 +36,7 @@ fn main() {
 
     match &cli.command {
         Some(Commands::Render { width, height }) => {
-            let renderer = pathtracer::PathTracer::new();
+            let renderer = PathTracer::new();
             renderer.render(width, height);
         }
         _ => {
