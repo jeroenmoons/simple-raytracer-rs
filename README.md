@@ -11,3 +11,16 @@ rendering.
 
 This project attempts a basic implementation - with very restricted geometry, materials, and techniques - serving mainly 
 as a learning opportunity for the Rust language.
+
+## Usage
+
+```bash
+# Run the renderer using defaults to produce an PNG image "out.png"
+cargo run render out.png
+
+# Run a different algorithm, the hello-world renderer in this case
+cargo run render helloworld.png -a hello-world
+
+# Produce a 400x300 png image
+cargo run render out_400x300.png --width 400 --height 300
+```

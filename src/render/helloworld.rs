@@ -2,17 +2,17 @@ use crate::render::Renderer;
 use image::{Rgb, RgbImage};
 use std::path::Path;
 
-pub struct PathTracer {}
+pub struct HelloWorld {}
 
-impl PathTracer {
+impl HelloWorld {
     pub fn new() -> Self {
         Self {}
     }
 
     fn calculate_pixel(w: f32, h: f32, x: f32, y: f32) -> (u8, u8, u8) {
-        let r = (x / w * 255.) as u8;
-        let g = (y / h * 255.) as u8;
-        let b = ((x + y) / (w + h) * 255.) as u8;
+        let r = (x / w * 255.999) as u8;
+        let g = (y / h * 255.999) as u8;
+        let b = ((x + y) / (w + h) * 255.999) as u8;
 
         (r, g, b)
     }
@@ -23,7 +23,7 @@ impl PathTracer {
         // Save the image to the file system, image format inferred from extension (.png, .jpg, ...)
         img.save(path).expect("Failed to save image");
 
-        println!("PathTracer output image saved to {}", path.display());
+        println!("HelloWorld output image saved to {}", path.display());
     }
 
     fn create_blank_image(w: &u32, h: &u32) -> RgbImage {
@@ -31,9 +31,9 @@ impl PathTracer {
     }
 }
 
-impl Renderer for PathTracer {
+impl Renderer for HelloWorld {
     fn render(&self, w: u32, h: u32, output_image: &String) -> () {
-        println!("PathTracer rendering {w} x {h} image");
+        println!("Hello world color rendering {w} x {h} image");
 
         // TODO - abstraction layer for the output
         let mut img = Self::create_blank_image(&w, &h);
