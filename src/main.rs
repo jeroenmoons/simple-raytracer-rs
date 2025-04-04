@@ -1,7 +1,10 @@
 mod render;
 
-// `crate::` is the starting point for paths pointing to modules in the current crate
-use crate::render::pathtracer::PathTracer;
+// `crate::` is the starting point for paths pointing to modules in the current crate.
+// Detailed treatment of how to structure a project:
+// https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
+use render::pathtracer::PathTracer;
+
 // Clap is used to define the cli declaratively
 use clap::{Parser, Subcommand};
 
