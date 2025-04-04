@@ -1,5 +1,6 @@
 use crate::output::Output;
 use crate::render::Renderer;
+use crate::scene::scene::Scene;
 use image::Rgb;
 
 pub struct PathTracer {}
@@ -19,8 +20,11 @@ impl PathTracer {
 }
 
 impl Renderer for PathTracer {
-    fn render(&mut self, w: u32, h: u32, output: &mut dyn Output) -> () {
-        println!("PathTracer rendering {w} x {h} image");
+    fn render(&mut self, scene: &Scene, w: u32, h: u32, output: &mut dyn Output) -> () {
+        println!(
+            "PathTracer rendering scene {} into a {w} x {h} image",
+            scene.name
+        );
 
         output.init();
 

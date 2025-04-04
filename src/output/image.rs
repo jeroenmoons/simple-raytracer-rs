@@ -39,7 +39,7 @@ impl Output for Image {
         match self.buffer {
             Some(ref mut buffer) => {
                 buffer.save(path).expect("Failed to save image");
-                println!("HelloWorld output image saved to {}", path.display());
+                println!("Output image saved to {}", path.display());
             }
             None => {
                 println!("Buffer not set, nothing to save");

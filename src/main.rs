@@ -5,6 +5,7 @@
 // The definition can be inline using {} OR in a subdirectory containing a mod.rs file.
 mod output;
 mod render;
+mod scene;
 
 use render::Algorithm;
 use render::Renderer;
@@ -12,6 +13,7 @@ use render::helloworld::HelloWorld;
 use render::pathtracer::PathTracer;
 
 // Clap is used to define the cli declaratively
+use crate::scene::scene::Scene;
 use clap::{Parser, Subcommand};
 
 // Default output image dimensions
@@ -50,11 +52,15 @@ fn main() {
             width,
             height,
         }) => {
+            let scene = Scene {
+                name: "Empty".to_string(),
+            };
+
             let mut renderer = get_renderer(&algorithm);
 
             let mut output = output::image::Image::new(*width, *height, output_image.to_string());
 
-            renderer.render(*width, *height, &mut output);
+            renderer.render(&scene, *width, *height, &mut output);
         }
         _ => {
             println!("Specify a subcommand");

@@ -1,5 +1,6 @@
 use crate::output::Output;
 use crate::render::Renderer;
+use crate::scene::scene::Scene;
 use image::Rgb;
 
 pub struct HelloWorld {}
@@ -19,7 +20,7 @@ impl HelloWorld {
 }
 
 impl Renderer for HelloWorld {
-    fn render(&mut self, w: u32, h: u32, output: &mut dyn Output) -> () {
+    fn render(&mut self, _scene: &Scene, w: u32, h: u32, output: &mut dyn Output) -> () {
         println!("Hello world color rendering {w} x {h} image");
 
         output.init();
