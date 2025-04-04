@@ -1,4 +1,6 @@
+use crate::output::Output;
 use clap::ValueEnum;
+
 pub mod helloworld;
 pub mod pathtracer;
 
@@ -10,5 +12,5 @@ pub enum Algorithm {
 }
 
 pub trait Renderer {
-    fn render(&self, w: u32, h: u32, output_image: &String);
+    fn render(&mut self, w: u32, h: u32, output: &mut dyn Output);
 }

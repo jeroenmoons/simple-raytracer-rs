@@ -50,8 +50,11 @@ fn main() {
             width,
             height,
         }) => {
-            let renderer = get_renderer(&algorithm);
-            renderer.render(*width, *height, output_image);
+            let mut renderer = get_renderer(&algorithm);
+
+            let mut output = output::image::Image::new(*width, *height, output_image.to_string());
+
+            renderer.render(*width, *height, &mut output);
         }
         _ => {
             println!("Specify a subcommand");
@@ -59,7 +62,7 @@ fn main() {
     }
 }
 
-fn get_renderer(algorithm: &&Algorithm) -> Box<dyn Renderer> {
+fn get_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
     match &algorithm {
         Algorithm::HelloWorld => Box::new(HelloWorld::new()),
         Algorithm::PathTracer => Box::new(PathTracer::new()),

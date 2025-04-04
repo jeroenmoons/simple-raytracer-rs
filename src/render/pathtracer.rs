@@ -1,6 +1,6 @@
+use crate::output::Output;
 use crate::render::Renderer;
-use image::{Rgb, RgbImage};
-use std::path::Path;
+use image::Rgb;
 
 pub struct PathTracer {}
 
@@ -16,37 +16,22 @@ impl PathTracer {
 
         (r, g, b)
     }
-
-    fn save_image(output_image: &String, img: &mut RgbImage) {
-        let path = Path::new(output_image);
-
-        // Save the image to the file system, image format inferred from extension (.png, .jpg, ...)
-        img.save(path).expect("Failed to save image");
-
-        println!("PathTracer output image saved to {}", path.display());
-    }
-
-    fn create_blank_image(w: &u32, h: &u32) -> RgbImage {
-        RgbImage::new(*w, *h)
-    }
 }
 
 impl Renderer for PathTracer {
-    fn render(&self, w: u32, h: u32, output_image: &String) -> () {
+    fn render(&mut self, w: u32, h: u32, output: &mut dyn Output) -> () {
         println!("PathTracer rendering {w} x {h} image");
 
-        // TODO - abstraction layer for the output
-        let mut img = Self::create_blank_image(&w, &h);
+        output.init();
 
         for x in 0..w {
             for y in 0..h {
                 let (r, g, b) = Self::calculate_pixel(w as f32, h as f32, x as f32, y as f32);
 
-                // Set the pixel color at (x, y)
-                img.put_pixel(x, y, Rgb([r, g, b]));
+                output.put_pixel(x, y, Rgb([r, g, b]));
             }
         }
 
-        Self::save_image(output_image, &mut img);
+        output.save()
     }
 }
