@@ -15,6 +15,9 @@ as a learning opportunity for the Rust language.
 ## Usage
 
 ```bash
+# Run tests
+cargo test
+
 # Run the renderer using defaults to produce an PNG image "out.png"
 cargo run render out.png
 
@@ -23,4 +26,8 @@ cargo run render helloworld.png -a hello-world
 
 # Produce a 400x300 png image
 cargo run render out_400x300.png --width 400 --height 300
+
+# Compile optimized binary (important when profiling to get representative results)
+cargo build --release
+target/release/simple-raytracer-rs render out.png
 ```

@@ -1,7 +1,7 @@
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)]
 pub struct Vec3 {
-    inner: glam::Vec3,
+    inner: glam::Vec3, // Use library under the hood, implements operations more efficiently
 }
 
 // These are type aliases, using these to make the code easier to read.
