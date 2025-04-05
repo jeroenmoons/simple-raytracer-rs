@@ -3,6 +3,7 @@
 
 // `mod` is NOT an include or import but a declaration stating that a module exists.
 // The definition can be inline using {} OR in a subdirectory containing a mod.rs file.
+mod math;
 mod output;
 mod render;
 mod scene;
