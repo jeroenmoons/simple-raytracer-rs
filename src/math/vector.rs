@@ -49,6 +49,12 @@ impl Vec3 {
     pub fn dot(&self, other: Self) -> f32 {
         self.inner.dot(other.inner)
     }
+
+    pub fn cross(self, other: Self) -> Self {
+        Self {
+            inner: self.inner.cross(other.inner),
+        }
+    }
 }
 
 impl Display for Vec3 {
@@ -131,6 +137,27 @@ mod tests {
             let vector_b = Vec3::new(b.0, b.1, b.2);
 
             assert_eq!(vector_a.dot(vector_b), *expected);
+        }
+    }
+
+    #[test]
+    fn it_calculates_cross_product_correctly() {
+        let cases = [
+            ((1., 2., 3.), (4., -5., 6.), (27., 6., -13.)), // basic
+            ((1., 0., 0.), (0., 1., 0.), (0., 0., 1.)),     // orthogonal vectors
+            ((1., 2., 3.), (2., 4., 6.), (0., 0., 0.)),     // parallel vectors
+            ((1., 2., 3.), (1., 2., 3.), (0., 0., 0.)),     // identical vectors
+            ((1., 2., 3.), (0., 0., 0.), (0., 0., 0.)),     // zero vector
+            ((-1., -2., -3.), (5., 2., 9.), (-12., -6., 8.)), // negative vector
+        ];
+
+        for (a, b, expected) in cases.iter() {
+            let vector_a = Vec3::new(a.0, a.1, a.2);
+            let vector_b = Vec3::new(b.0, b.1, b.2);
+
+            assert_eq!(vector_a.cross(vector_b).x(), expected.0);
+            assert_eq!(vector_a.cross(vector_b).y(), expected.1);
+            assert_eq!(vector_a.cross(vector_b).z(), expected.2);
         }
     }
 
