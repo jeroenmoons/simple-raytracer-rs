@@ -11,6 +11,7 @@ use render::Algorithm;
 use render::Renderer;
 use render::helloworld::HelloWorld;
 use render::pathtracer::PathTracer;
+use std::time::Instant;
 
 // Clap is used to define the cli declaratively
 use crate::scene::scene::Scene;
@@ -45,6 +46,8 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
+    let start = Instant::now();
+
     match &cli.command {
         Some(Commands::Render {
             algorithm,
@@ -66,6 +69,8 @@ fn main() {
             println!("Specify a subcommand");
         }
     }
+
+    println!("Command completed in {:.2?}", start.elapsed());
 }
 
 fn get_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
