@@ -1,8 +1,9 @@
+use super::output::Output;
 use crate::math::vector::Color;
-use crate::output::Output;
 use image::{Rgb, RgbImage};
 use std::path::Path;
 
+// Generates an output image using Rust's built-in image module
 pub struct Image {
     w: u32,
     h: u32,

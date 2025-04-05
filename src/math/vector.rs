@@ -1,7 +1,3 @@
-// This Vec3 struct serves as an abstraction layer between the rendering algorithms and the algebra
-// library that implements the math efficiently. At some point I may want to try other libraries to
-// compare the performance.
-
 use std::fmt;
 use std::fmt::Display;
 use std::ops::{Add, Div, Mul};
@@ -9,6 +5,9 @@ use std::ops::{Add, Div, Mul};
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
 pub struct Vec3 {
+    // This Vec3 struct serves as an abstraction layer between the rendering algorithms and the
+    // linear algebra library that implements the math efficiently. At some point I may want to try
+    // other libraries to compare the performance.
     inner: glam::Vec3, // Use library under the hood, implements operations more efficiently
 }
 

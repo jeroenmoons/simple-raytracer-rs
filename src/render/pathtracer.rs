@@ -1,10 +1,11 @@
 use crate::math::vector::Color;
-use crate::output::Output;
-use crate::render::Renderer;
+use crate::output::output::Output;
+use crate::render::renderer::Renderer;
 use crate::scene::scene::Scene;
 use std::io;
 use std::io::Write;
 
+// Renders a Scene to output using a path tracing algorithm
 pub struct PathTracer {}
 
 impl PathTracer {

@@ -1,8 +1,9 @@
 use crate::math::vector::Color;
-use crate::output::Output;
-use crate::render::Renderer;
+use crate::output::output::Output;
+use crate::render::renderer::Renderer;
 use crate::scene::scene::Scene;
 
+// Renders a hardcoded color gradient to output
 pub struct HelloWorld {}
 
 impl HelloWorld {

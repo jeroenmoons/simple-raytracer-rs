@@ -1,22 +1,16 @@
+// Main crate, only defines the CLI and calls stuff in the Lib crate based on CLI input.
+//
 // Detailed treatment of how to structure a project:
 // https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
 
-// `mod` is NOT an include or import but a declaration stating that a module exists.
-// The definition can be inline using {} OR in a subdirectory containing a mod.rs file.
-mod math;
-mod output;
-mod render;
-mod scene;
-
-use render::Algorithm;
-use render::Renderer;
-use render::helloworld::HelloWorld;
-use render::pathtracer::PathTracer;
 use std::time::Instant;
-
 // Clap is used to define the cli declaratively
-use crate::scene::scene::Scene;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
+use srt::output::image::Image;
+use srt::render::helloworld::HelloWorld;
+use srt::render::pathtracer::PathTracer;
+use srt::render::renderer::Renderer;
+use srt::scene::scene::Scene;
 
 // Default output image dimensions
 const DEFAULT_WIDTH: u32 = 800;
@@ -44,6 +38,14 @@ enum Commands {
     },
 }
 
+// Available rendering algorithms
+#[derive(ValueEnum, Clone, Default, Debug)]
+pub enum Algorithm {
+    #[default]
+    HelloWorld,
+    PathTracer,
+}
+
 fn main() {
     let cli = Cli::parse();
 
@@ -62,7 +64,7 @@ fn main() {
 
             let mut renderer = get_renderer(&algorithm);
 
-            let mut output = output::image::Image::new(*width, *height, output_image.to_string());
+            let mut output = Image::new(*width, *height, output_image.to_string());
 
             renderer.render(&scene, *width, *height, &mut output);
         }
@@ -74,6 +76,7 @@ fn main() {
     println!("Command completed in {:.2?}", start.elapsed());
 }
 
+// Returns a renderer object for the specified Algorithm
 fn get_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
     match &algorithm {
         Algorithm::HelloWorld => Box::new(HelloWorld::new()),
