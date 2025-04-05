@@ -30,6 +30,10 @@ impl Vec3 {
         self.inner.z
     }
 
+    pub fn dot(&self, other: Self) -> f32 {
+        self.inner.dot(other.inner)
+    }
+
     // TODO: Implement operations
 }
 
@@ -62,5 +66,24 @@ mod tests {
         assert_eq!(a_point.x(), 0.5);
         assert_eq!(a_point.y(), 0.42);
         assert_eq!(a_point.z(), 0.8);
+    }
+
+    #[test]
+    fn it_calculates_dot_product_correctly() {
+        let cases = [
+            ((1., 2., 3.), (4., -5., 6.), 12.),    // basic
+            ((1., 0., 0.), (0., 1., 0.), 0.),      // orthogonal vectors, dot product zero
+            ((2., 3., 4.), (4., 6., 8.), 58.),     // parallel vectors
+            ((2., 3., 4.), (0., 0., 0.), 0.),      // zero vector
+            ((2., 3., 4.), (-1., -2., -3.), -20.), // negative vector
+            ((1., 8., 3.), (1., 8., 3.), 74.),     // identical vectors
+        ];
+
+        for (a, b, expected) in cases.iter() {
+            let vector_a = Vec3::new(a.0, a.1, a.2);
+            let vector_b = Vec3::new(b.0, b.1, b.2);
+
+            assert_eq!(vector_a.dot(vector_b), *expected);
+        }
     }
 }
