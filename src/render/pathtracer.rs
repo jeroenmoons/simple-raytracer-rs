@@ -1,7 +1,7 @@
+use crate::math::vector::Color;
 use crate::output::Output;
 use crate::render::Renderer;
 use crate::scene::scene::Scene;
-use image::Rgb;
 use std::io;
 use std::io::Write;
 
@@ -12,12 +12,12 @@ impl PathTracer {
         Self {}
     }
 
-    fn calculate_pixel(w: f32, h: f32, x: f32, y: f32) -> (u8, u8, u8) {
-        let r = (x / w * 255.) as u8;
-        let g = (y / h * 255.) as u8;
-        let b = ((x + y) / (w + h) * 255.) as u8;
+    fn calculate_pixel(w: f32, h: f32, x: f32, y: f32) -> Color {
+        let r = x / w * 255.;
+        let g = y / h * 255.;
+        let b = (x + y) / (w + h) * 255.;
 
-        (r, g, b)
+        Color::new(r, g, b)
     }
 
     fn print_progress(total_pixels: usize, count: usize) {
@@ -47,9 +47,9 @@ impl Renderer for PathTracer {
 
                 Self::print_progress(total_pixels, count);
 
-                let (r, g, b) = Self::calculate_pixel(w as f32, h as f32, x as f32, y as f32);
+                let color = Self::calculate_pixel(w as f32, h as f32, x as f32, y as f32);
 
-                output.put_pixel(x, y, Rgb([r, g, b]));
+                output.put_pixel(x, y, &color);
             }
         }
 

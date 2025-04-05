@@ -1,3 +1,4 @@
+use crate::math::vector::Color;
 use crate::output::Output;
 use image::{Rgb, RgbImage};
 use std::path::Path;
@@ -25,9 +26,9 @@ impl Output for Image {
         self.buffer = Some(RgbImage::new(self.w, self.h));
     }
 
-    fn put_pixel(&mut self, x: u32, y: u32, pixel: Rgb<u8>) {
+    fn put_pixel(&mut self, x: u32, y: u32, c: &Color) {
         if let Some(buffer) = self.buffer.as_mut() {
-            buffer.put_pixel(x, y, pixel);
+            buffer.put_pixel(x, y, Rgb([c.x() as u8, c.y() as u8, c.z() as u8]));
         } else {
             panic!("Pixel buffer is not set, call init first");
         }

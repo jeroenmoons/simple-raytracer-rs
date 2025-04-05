@@ -1,13 +1,14 @@
 #[derive(Clone, Copy, Debug, PartialEq)]
-#[repr(transparent)]
+#[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
 pub struct Vec3 {
     inner: glam::Vec3, // Use library under the hood, implements operations more efficiently
 }
 
 // These are type aliases, using these to make the code easier to read.
-// When a Vec3 is expected, Color and Point can be passed without getting any errors though!
-type Color = Vec3;
-type Point = Vec3;
+// For the compiler these are completely interchangeable though! When a Vec3 is expected, Color and
+// Point can be passed without getting any errors.
+pub type Color = Vec3;
+pub type Point = Vec3;
 
 impl Vec3 {
     #[inline]
