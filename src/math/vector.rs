@@ -34,6 +34,18 @@ impl Vec3 {
         self.inner.z
     }
 
+    // Got into a rabbit hole here because I did not understand why the argument b to .dot(b) is not
+    // consumed when it is called. I could still use b after passing it into a call to .dot because
+    // Vec3 implements the Copy trait, and so do its fields, making it stack data rather than heap
+    // data. The rules for ownership and borrowing are not applied here.
+    //
+    // Relevant excerpt from the Rust book - https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
+    // """
+    // Rust has a special annotation called the Copy trait that we can place on types that are
+    // stored on the stack, as integers are (we’ll talk more about traits in Chapter 10). If a type
+    // implements the Copy trait, variables that use it do not move, but rather are trivially copied,
+    // making them still valid after assignment to another variable.
+    // """
     pub fn dot(&self, other: Self) -> f32 {
         self.inner.dot(other.inner)
     }
