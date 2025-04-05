@@ -1,3 +1,7 @@
+use std::fmt;
+use std::fmt::Display;
+use std::ops::{Add, Div, Mul};
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
 pub struct Vec3 {
@@ -33,8 +37,39 @@ impl Vec3 {
     pub fn dot(&self, other: Self) -> f32 {
         self.inner.dot(other.inner)
     }
+}
 
-    // TODO: Implement operations
+impl Display for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Vec3({:.2}, {:.2}, {:.2})", self.x(), self.y(), self.z())
+    }
+}
+
+impl Add for Vec3 {
+    type Output = Self;
+    fn add(self, other: Self) -> Self::Output {
+        Self {
+            inner: self.inner + other.inner,
+        }
+    }
+}
+
+impl Mul for Vec3 {
+    type Output = Self;
+    fn mul(self, other: Self) -> Self::Output {
+        Self {
+            inner: self.inner * other.inner,
+        }
+    }
+}
+
+impl Div for Vec3 {
+    type Output = Self;
+    fn div(self, other: Self) -> Self::Output {
+        Self {
+            inner: self.inner / other.inner,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -85,5 +120,44 @@ mod tests {
 
             assert_eq!(vector_a.dot(vector_b), *expected);
         }
+    }
+
+    #[test]
+    fn it_supports_inline_add() {
+        let a = Vec3::new(3., 6., 0.4);
+        let b = Vec3::new(5., 2., 0.7);
+        let expected = Vec3::new(8., 8., 1.1);
+
+        let result = a + b;
+
+        assert_eq!(result.x(), expected.x());
+        assert_eq!(result.y(), expected.y());
+        assert_eq!(result.z(), expected.z());
+    }
+
+    #[test]
+    fn it_supports_inline_mul() {
+        let a = Vec3::new(3., 6., 0.4);
+        let b = Vec3::new(5., 2., 0.7);
+        let expected = Vec3::new(15., 12., 0.28);
+
+        let result = a * b;
+
+        assert_eq!(result.x(), expected.x());
+        assert_eq!(result.y(), expected.y());
+        assert_eq!(result.z(), expected.z());
+    }
+
+    #[test]
+    fn it_supports_inline_div() {
+        let a = Vec3::new(3., 6., 0.42);
+        let b = Vec3::new(3., 2., 0.2);
+        let expected = Vec3::new(1., 3., 2.1);
+
+        let result = a / b;
+
+        assert_eq!(result.x(), expected.x());
+        assert_eq!(result.y(), expected.y());
+        assert_eq!(result.z(), expected.z());
     }
 }
