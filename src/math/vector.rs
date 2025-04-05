@@ -1,5 +1,6 @@
 // This Vec3 struct serves as an abstraction layer between the rendering algorithms and the algebra
-// library that implements the math efficiently.
+// library that implements the math efficiently. At some point I may want to try other libraries to
+// compare the performance.
 
 use std::fmt;
 use std::fmt::Display;
