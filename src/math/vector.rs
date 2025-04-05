@@ -1,3 +1,6 @@
+// This Vec3 struct serves as an abstraction layer between the rendering algorithms and the algebra
+// library that implements the math efficiently.
+
 use std::fmt;
 use std::fmt::Display;
 use std::ops::{Add, Div, Mul};
@@ -198,5 +201,17 @@ mod tests {
         assert_eq!(result.x(), expected.x());
         assert_eq!(result.y(), expected.y());
         assert_eq!(result.z(), expected.z());
+    }
+
+    #[test]
+    fn it_is_comparable() {
+        let a = Vec3::new(3., 6., 0.4);
+        let b = Vec3::new(3., 6., 0.4);
+        let c = Vec3::new(5., 6., 0.4);
+
+        // This works due to Vec3's `PartialEq` derivation
+        assert_eq!(a == b, true);
+        assert_eq!(a == c, false);
+        assert_eq!(b == c, false);
     }
 }
