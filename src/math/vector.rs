@@ -53,7 +53,7 @@ impl Vec3 {
         self.inner.dot(other.inner)
     }
 
-    pub fn cross(self, other: Self) -> Self {
+    pub fn cross(&self, other: Self) -> Self {
         Self {
             inner: self.inner.cross(other.inner),
         }
@@ -66,6 +66,7 @@ impl Display for Vec3 {
     }
 }
 
+// Support inline addition Vec3 + Vec3
 impl Add for Vec3 {
     type Output = Self;
     fn add(self, other: Self) -> Self::Output {
@@ -75,6 +76,7 @@ impl Add for Vec3 {
     }
 }
 
+// Support inline product Vec3 * Vec3
 impl Mul for Vec3 {
     type Output = Self;
     fn mul(self, other: Self) -> Self::Output {
@@ -84,6 +86,29 @@ impl Mul for Vec3 {
     }
 }
 
+// Support inline product Vec3 * f32
+impl Mul<f32> for Vec3 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, other: f32) -> Self::Output {
+        Self {
+            inner: self.inner * other,
+        }
+    }
+}
+
+// Support inline product f32 * Vec3
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+    #[inline]
+    fn mul(self, other: Vec3) -> Vec3 {
+        Vec3 {
+            inner: self * other.inner,
+        }
+    }
+}
+
+// Support inline division Vec3 / Vec3
 impl Div for Vec3 {
     type Output = Self;
     fn div(self, other: Self) -> Self::Output {

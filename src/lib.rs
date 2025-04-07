@@ -1,9 +1,11 @@
 // A `mod` statement is NOT an include or import but a declaration stating that a module exists.
 // This `mod` tree maps to the file tree under src to find module implementation code.
+pub mod geometry {
+    pub mod ray;
+}
 pub mod math {
     pub mod vector;
 }
-
 pub mod output {
     pub mod image;
     pub mod output;
