@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fmt::Display;
-use std::ops::{Add, Div, Mul};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
@@ -18,7 +18,10 @@ pub type Color = Vec3;
 pub type Point = Vec3;
 
 impl Vec3 {
-    #[inline]
+    pub fn origin() -> Self {
+        Self::new(0., 0., 0.)
+    }
+
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self {
             inner: glam::Vec3::new(x, y, z),
@@ -58,6 +61,12 @@ impl Vec3 {
             inner: self.inner.cross(other.inner),
         }
     }
+
+    pub fn unit(&self) -> Self {
+        Self {
+            inner: self.inner.normalize(),
+        }
+    }
 }
 
 impl Display for Vec3 {
@@ -76,6 +85,16 @@ impl Add for Vec3 {
     }
 }
 
+// Support inline subtrqction Vec3 + Vec3
+impl Sub for Vec3 {
+    type Output = Self;
+    fn sub(self, other: Self) -> Self::Output {
+        Self {
+            inner: self.inner - other.inner,
+        }
+    }
+}
+
 // Support inline product Vec3 * Vec3
 impl Mul for Vec3 {
     type Output = Self;
@@ -89,7 +108,6 @@ impl Mul for Vec3 {
 // Support inline product Vec3 * f32
 impl Mul<f32> for Vec3 {
     type Output = Self;
-    #[inline]
     fn mul(self, other: f32) -> Self::Output {
         Self {
             inner: self.inner * other,
@@ -100,7 +118,6 @@ impl Mul<f32> for Vec3 {
 // Support inline product f32 * Vec3
 impl Mul<Vec3> for f32 {
     type Output = Vec3;
-    #[inline]
     fn mul(self, other: Vec3) -> Vec3 {
         Vec3 {
             inner: self * other.inner,
@@ -114,6 +131,16 @@ impl Div for Vec3 {
     fn div(self, other: Self) -> Self::Output {
         Self {
             inner: self.inner / other.inner,
+        }
+    }
+}
+
+// Support inline division Vec3 / f32
+impl Div<f32> for Vec3 {
+    type Output = Self;
+    fn div(self, other: f32) -> Self::Output {
+        Self {
+            inner: self.inner / other,
         }
     }
 }
@@ -203,7 +230,20 @@ mod tests {
     }
 
     #[test]
-    fn it_supports_inline_mul() {
+    fn it_supports_inline_subtract() {
+        let a = Vec3::new(3., 6., 0.4);
+        let b = Vec3::new(5., 2., 0.8);
+        let expected = Vec3::new(-2., 4., -0.4);
+
+        let result = a - b;
+
+        assert_eq!(result.x(), expected.x());
+        assert_eq!(result.y(), expected.y());
+        assert_eq!(result.z(), expected.z());
+    }
+
+    #[test]
+    fn it_supports_inline_mul_vec_vec() {
         let a = Vec3::new(3., 6., 0.4);
         let b = Vec3::new(5., 2., 0.7);
         let expected = Vec3::new(15., 12., 0.28);
@@ -216,10 +256,24 @@ mod tests {
     }
 
     #[test]
-    fn it_supports_inline_div() {
+    fn it_supports_inline_div_vec_vec() {
         let a = Vec3::new(3., 6., 0.42);
         let b = Vec3::new(3., 2., 0.2);
         let expected = Vec3::new(1., 3., 2.1);
+
+        let result = a / b;
+
+        assert_eq!(result.x(), expected.x());
+        assert_eq!(result.y(), expected.y());
+        assert_eq!(result.z(), expected.z());
+    }
+
+    #[test]
+    fn it_supports_inline_div_vec_f32() {
+        let a = Vec3::new(3., 6., 9.);
+        let b = 3.;
+
+        let expected = Vec3::new(1., 2., 3.);
 
         let result = a / b;
 

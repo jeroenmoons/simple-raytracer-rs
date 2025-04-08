@@ -10,7 +10,7 @@ use srt::output::image::Image;
 use srt::render::helloworld::HelloWorld;
 use srt::render::pathtracer::PathTracer;
 use srt::render::renderer::Renderer;
-use srt::scene::scene::Scene;
+use srt::scenes;
 
 // Default output image dimensions
 const DEFAULT_WIDTH: u32 = 800;
@@ -58,9 +58,7 @@ fn main() {
             width,
             height,
         }) => {
-            let scene = Scene {
-                name: "Empty".to_string(),
-            };
+            let scene = scenes::single_orb::generate(); // TODO scene from cli argument/flag
 
             let mut renderer = get_renderer(&algorithm);
 

@@ -29,7 +29,15 @@ impl Output for Image {
 
     fn put_pixel(&mut self, x: u32, y: u32, c: &Color) {
         if let Some(buffer) = self.buffer.as_mut() {
-            buffer.put_pixel(x, y, Rgb([c.x() as u8, c.y() as u8, c.z() as u8]));
+            buffer.put_pixel(
+                x,
+                y,
+                Rgb([
+                    (c.x() * 255.) as u8,
+                    (c.y() * 255.) as u8,
+                    (c.z() * 255.) as u8,
+                ]),
+            );
         } else {
             panic!("Pixel buffer is not set, call init first");
         }

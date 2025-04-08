@@ -1,18 +1,35 @@
+use std::fmt;
+use std::fmt::Display;
+
 use crate::math::vector::{Point, Vec3};
 
 // Represents a ray originating at a Camera's eye point and propagating through the Scene
+#[derive(Debug)]
 pub struct Ray {
-    origin: Point,
-    direction: Vec3,
+    pub origin: Point,
+    pub direction: Vec3,
 }
 
 impl Ray {
-    pub fn new(origin: Point, direction: Vec3) -> Self {
-        Self { origin, direction }
+    pub fn new(from: Point, to: Point) -> Self {
+        Self {
+            origin: from,
+            direction: to - from,
+        }
     }
 
     pub fn at(&self, t: f32) -> Point {
         self.origin + t * self.direction
+    }
+}
+
+impl Display for Ray {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Ray(origin {}, direction {})",
+            self.origin, self.direction
+        )
     }
 }
 
@@ -23,16 +40,16 @@ mod tests {
     #[test]
     fn it_supports_travelling_along() {
         let cases = [
-            ((1., 2., 3.), (4., 5., 6.), 2., (9., 12., 15.)),
-            ((1., 2., 3.), (1., 0., 0.), 0.2, (1.2, 2., 3.)),
-            ((1., 2., 3.), (0., 1., 0.), 0.2, (1., 2.2, 3.)),
-            ((1., 2., 3.), (0., 0., 1.), 0.2, (1., 2., 3.2)),
+            ((1., 1., 1.), (2., 2., 2.), 0.5, (1.5, 1.5, 1.5)),
+            ((1., 1., 1.), (3., 1., 1.), 5., (11., 1., 1.)),
+            ((1., 1., 1.), (1., 5., 1.), 5., (1., 21., 1.)),
+            ((1., 1., 1.), (1., 1., 2.), 5., (1., 1., 6.)),
         ];
 
-        for (p, d, t, expected) in cases.iter() {
-            let origin = Point::new(p.0, p.1, p.2);
-            let direction = Vec3::new(d.0, d.1, d.2);
-            let ray = Ray::new(origin, direction);
+        for (from, to, t, expected) in cases.iter() {
+            let from = Point::new(from.0, from.1, from.2);
+            let to = Vec3::new(to.0, to.1, to.2);
+            let ray = Ray::new(from, to);
 
             let point_b = ray.at(*t);
 
