@@ -1,4 +1,5 @@
-use super::ray::Ray;
+use super::ray::T_MIN;
+use super::ray::{Ray, T_MAX};
 use crate::scene::object::Hit;
 use crate::{math::vector::Point, scene::object::Object};
 
@@ -26,15 +27,18 @@ impl Object for Sphere {
             return (false, None); // No solution
         }
 
-        let t = (h - discriminant.sqrt()) / a; // Calculate t where ray intersects sphere
+        let discriminant_squared = discriminant.sqrt();
+        let t = (h - discriminant_squared) / a; // Calculate t where ray intersects sphere
 
-        if t <= 0. {
-            // Consider only positive solutions, in front of the camera. sSince the Ray originates
-            // there any t < 0 are behind the camera and this invisible.
-            return (false, None);
+        // Find solution closest to the camera within acceptable range between camera and horizon
+        if t <= T_MIN || T_MAX <= t {
+            let t = (h + discriminant_squared) / a;
+            if t <= T_MIN || T_MAX <= t {
+                return (false, None);
+            }
         }
 
-        // Proper hit, calculate hit point and normal
+        // Proper hit, calculate hit point and the normal at that point
         let p = ray.at(t);
         let normal = (p - self.center).unit();
 

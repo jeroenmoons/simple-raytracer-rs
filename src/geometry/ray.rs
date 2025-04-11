@@ -3,6 +3,10 @@ use std::fmt::Display;
 
 use crate::math::vector::{Point, Vec3};
 
+// Defines the acceptable range within which a Ray intersection with an Object must lie
+pub const T_MIN: f32 = 0.0001; // Arbitrary value for now, what is reasonable?
+pub const T_MAX: f32 = 1000.0; // Arbitrary value for now, what is reasonable?
+
 // Represents a ray originating at a Camera's eye point and propagating through the Scene
 #[derive(Debug)]
 pub struct Ray {

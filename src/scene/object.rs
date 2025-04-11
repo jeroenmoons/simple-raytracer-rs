@@ -1,10 +1,12 @@
 use crate::geometry::ray::Ray;
 use crate::math::vector::{Point, Vec3};
 
+// Parent for anything that is part of a scene and can have an effect on the rendered output
 pub trait Object {
     fn hit_by(&self, ray: &Ray) -> (bool, Option<Hit>);
 }
 
+// Represents a Ray hitting an object
 pub struct Hit {
     pub p: Point,     // Point at which Object is hit
     pub normal: Vec3, // The normal to the Object at the hit point
