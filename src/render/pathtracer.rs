@@ -17,17 +17,17 @@ impl PathTracer {
     }
 
     fn calculate_pixel(scene: &Scene, ray: &Ray) -> Color {
-        if scene.hit_by(ray) {
-            // Object in the scene was hit
-            return Color::new(0.5, 0.1, 0.1);
+        match scene.trace(ray) {
+            Some(color) => color, // Something in the scene determined the pixel's color
+            _ => {
+                // Nothing was hit, fall back to background gradient
+                let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1
+                let a = 0.5 * unit_direction.y() + 1.0;
+
+                // Blend ("lerp", linear interpolation) between white and blue colors based on the ray's Y coordinate
+                (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.5, 0.7, 1.)
+            }
         }
-
-        // Nothing was hit, fall back to background gradient
-        let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1
-        let a = 0.5 * unit_direction.y() + 1.0;
-
-        // Blend ("lerp", linear interpolation) between white and blue colors based on the ray's Y coordinate
-        (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.5, 0.7, 1.)
     }
 
     fn print_progress(total_pixels: usize, count: usize) {

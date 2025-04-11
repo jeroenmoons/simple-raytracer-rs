@@ -1,6 +1,6 @@
-use crate::{math::vector::Point, scene::object::Object};
-
 use super::ray::Ray;
+use crate::scene::object::Hit;
+use crate::{math::vector::Point, scene::object::Object};
 
 pub struct Sphere {
     pub center: Point,
@@ -14,20 +14,29 @@ impl Sphere {
 }
 
 impl Object for Sphere {
-    fn hit_by(&self, ray: &Ray) -> bool {
+    fn hit_by(&self, ray: &Ray) -> (bool, Option<Hit>) {
         let oc = self.center - ray.origin;
         let a = ray.direction.dot(ray.direction);
         let b = -2. * ray.direction.dot(oc);
         let c = oc.dot(oc) - self.radius * self.radius;
         let discriminant = b * b - 4. * a * c;
 
-        return discriminant >= 0.;
+        if discriminant < 0. {
+            return (false, None); // No solution
+        }
 
-        // vec3 oc = center - r.origin();
-        // auto a = dot(r.direction(), r.direction());
-        // auto b = -2.0 * dot(r.direction(), oc);
-        // auto c = dot(oc, oc) - radius*radius;
-        // auto discriminant = b*b - 4*a*c;
-        // return (discriminant >= 0);
+        let t = (-b - discriminant.sqrt()) / (2. * a); // Calculate t where ray intersects sphere
+
+        if t <= 0. {
+            // Consider only positive solutions, in front of the camera. sSince the Ray originates
+            // there any t < 0 are behind the camera and this invisible.
+            return (false, None);
+        }
+
+        // Proper hit, calculate hit point and normal
+        let p = ray.at(t);
+        let normal = (p - self.center).unit();
+
+        (true, Some(Hit::new(p, normal, t)))
     }
 }
