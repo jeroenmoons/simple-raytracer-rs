@@ -16,16 +16,17 @@ impl Sphere {
 impl Object for Sphere {
     fn hit_by(&self, ray: &Ray) -> (bool, Option<Hit>) {
         let oc = self.center - ray.origin;
-        let a = ray.direction.dot(ray.direction);
-        let b = -2. * ray.direction.dot(oc);
-        let c = oc.dot(oc) - self.radius * self.radius;
-        let discriminant = b * b - 4. * a * c;
+        let a = ray.direction.length_squared();
+        let h = ray.direction.dot(oc);
+        let c = oc.length_squared() - self.radius * self.radius;
+
+        let discriminant = h * h - a * c;
 
         if discriminant < 0. {
             return (false, None); // No solution
         }
 
-        let t = (-b - discriminant.sqrt()) / (2. * a); // Calculate t where ray intersects sphere
+        let t = (h - discriminant.sqrt()) / a; // Calculate t where ray intersects sphere
 
         if t <= 0. {
             // Consider only positive solutions, in front of the camera. sSince the Ray originates

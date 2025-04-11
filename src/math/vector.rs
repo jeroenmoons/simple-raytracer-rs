@@ -40,6 +40,10 @@ impl Vec3 {
         self.inner.z
     }
 
+    pub fn length_squared(&self) -> f32 {
+        self.inner.length_squared()
+    }
+
     // Got into a rabbit hole here because I did not understand why the argument b to .dot(b) is not
     // consumed when it is called. I could still use b after passing it into a call to .dot because
     // Vec3 implements the Copy trait, and so do its fields, making it stack data rather than heap
