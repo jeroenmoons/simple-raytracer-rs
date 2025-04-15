@@ -3,7 +3,7 @@ use crate::math::vector::{Point, Vec3};
 
 // Parent for anything that is part of a scene and can have an effect on the rendered output
 pub trait Object {
-    fn hit_by(&self, ray: &Ray) -> (bool, Option<Hit>);
+    fn hit_by(&self, ray: &Ray, t_min: f32, t_max: f32) -> (bool, Option<Hit>);
 }
 
 // Represents a Ray hitting an object

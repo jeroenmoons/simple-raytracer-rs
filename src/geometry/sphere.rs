@@ -1,7 +1,7 @@
-use super::ray::T_MIN;
-use super::ray::{Ray, T_MAX};
 use crate::scene::object::Hit;
 use crate::{math::vector::Point, scene::object::Object};
+
+use super::ray::Ray;
 
 pub struct Sphere {
     pub center: Point,
@@ -15,7 +15,7 @@ impl Sphere {
 }
 
 impl Object for Sphere {
-    fn hit_by(&self, ray: &Ray) -> (bool, Option<Hit>) {
+    fn hit_by(&self, ray: &Ray, t_min: f32, t_max: f32) -> (bool, Option<Hit>) {
         let oc = self.center - ray.origin;
         let a = ray.direction.length_squared();
         let h = ray.direction.dot(oc);
@@ -31,9 +31,9 @@ impl Object for Sphere {
         let t = (h - discriminant_squared) / a; // Calculate t where ray intersects sphere
 
         // Find solution closest to the camera within acceptable range between camera and horizon
-        if t <= T_MIN || T_MAX <= t {
+        if t <= t_min || t_max <= t {
             let t = (h + discriminant_squared) / a;
-            if t <= T_MIN || T_MAX <= t {
+            if t <= t_min || t_max <= t {
                 return (false, None);
             }
         }
