@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fmt::Display;
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
@@ -76,6 +76,14 @@ impl Vec3 {
 impl Display for Vec3 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Vec3({:.2}, {:.2}, {:.2})", self.x(), self.y(), self.z())
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self { inner: -self.inner }
     }
 }
 

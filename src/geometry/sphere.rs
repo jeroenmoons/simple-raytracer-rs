@@ -38,10 +38,10 @@ impl Object for Sphere {
             }
         }
 
-        // Proper hit, calculate hit point and the normal at that point
+        // Proper hit, calculate hit point and the outward normal (pointing from the center outward) at that point
         let p = ray.at(t);
-        let normal = (p - self.center).unit();
+        let outward_normal = (p - self.center).unit();
 
-        (true, Some(Hit::new(p, normal, t)))
+        (true, Some(Hit::new(&ray, p, outward_normal, t)))
     }
 }
