@@ -5,6 +5,8 @@ pub mod geometry {
     pub mod sphere;
 }
 pub mod math {
+    pub mod angles;
+    pub mod constants;
     pub mod vector;
 }
 pub mod output {
