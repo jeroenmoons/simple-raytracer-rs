@@ -60,7 +60,7 @@ fn main() {
         }) => {
             // TODO scene from cli argument/flag
             // let scene = scenes::single_orb::generate();
-            let scene: srt::scene::scene::Scene = scenes::small_orb_above_huge_one::generate();
+            let scene: srt::scene::scene::Scene = scenes::small_orb_with_ground::generate();
             // let scene: srt::scene::scene::Scene = scenes::small_orb_in_front_of_larger_one::generate();
 
             let mut renderer = get_renderer(&algorithm);
