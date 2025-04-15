@@ -26,7 +26,7 @@ impl Scene {
         }
 
         match closest {
-            (Some(_obj), Some(hit)) => Some(0.5 * hit.normal + Color::new(0.5, 0.5, 0.5)),
+            (Some(_obj), Some(hit)) => Some(0.5 * (hit.normal + Color::new(1., 1., 1.))),
             _ => None,
         }
     }
