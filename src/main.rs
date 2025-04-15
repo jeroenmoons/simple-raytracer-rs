@@ -58,7 +58,9 @@ fn main() {
             width,
             height,
         }) => {
-            let scene = scenes::single_orb::generate(); // TODO scene from cli argument/flag
+            // TODO scene from cli argument/flag
+            // let scene = scenes::single_orb::generate();
+            let scene = scenes::small_orb_in_front_of_larger_one::generate();
 
             let mut renderer = get_renderer(&algorithm);
 

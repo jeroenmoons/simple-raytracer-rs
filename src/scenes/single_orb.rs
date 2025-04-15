@@ -5,7 +5,7 @@ pub fn generate() -> Scene {
     let sphere = Sphere::new(center, 0.5);
 
     Scene {
-        name: String::from("Empty"),
+        name: String::from("Single sphere"),
         objects: vec![Box::new(sphere)],
     }
 }
