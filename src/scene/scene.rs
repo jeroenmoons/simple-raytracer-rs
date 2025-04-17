@@ -1,5 +1,6 @@
 use super::object::{Hit, Object};
 use crate::geometry::ray::{Ray, T_MAX, T_MIN};
+use crate::math::numbers::Interval;
 use crate::math::vector::Color;
 
 pub struct Scene {
@@ -14,7 +15,7 @@ impl Scene {
         let mut closest: (Option<&Box<dyn Object>>, Option<Hit>) = (None, None);
 
         for obj in self.objects.iter() {
-            match obj.hit_by(ray, t_min, t_max) {
+            match obj.hit_by(ray, Interval::new(t_min, t_max)) {
                 (true, Some(hit_params)) => {
                     if hit_params.t < t_max {
                         t_max = hit_params.t; // Any subsequent hits need to be closer to the camera than this one
