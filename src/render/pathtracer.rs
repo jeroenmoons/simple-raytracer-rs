@@ -1,8 +1,7 @@
 use crate::geometry::ray::Ray;
-use crate::math::vector::{Color, Point};
-use crate::output::output::Output;
-use crate::render::renderer::Renderer;
-use crate::scene::camera::Camera;
+use crate::math::vector::Color;
+use crate::output::output::{Output, OutputType};
+use crate::render::renderer::{Renderer, get_output};
 use crate::scene::scene::Scene;
 use crate::scene::viewport::Viewport;
 use std::io;
@@ -40,26 +39,42 @@ impl PathTracer {
 }
 
 impl Renderer for PathTracer {
-    fn render(&mut self, scene: &Scene, w: u32, h: u32, output: &mut dyn Output) -> () {
-        println!("PathTracer rendering {} to a {w} x {h} image", scene.name);
+    fn render(
+        &mut self,
+        scene: &Scene,
+        camera_name: String,
+        image_w: u32,
+        output_type: OutputType,
+    ) -> Result<Box<dyn Output>, String> {
+        let camera = scene
+            .get_camera(&camera_name)
+            .ok_or(format!("Camera {camera_name} not found"))?;
+
+        let viewport = Viewport::from(camera, image_w);
+        let image_h = viewport.image_h;
+
+        let mut output = get_output(image_w, image_h, &output_type);
+
+        println!(
+            "PathTracer rendering {} to a {image_w} x {image_h} {:?} image",
+            scene.name, output_type,
+        );
+
+        println!("Viewport: {viewport}");
 
         output.init();
 
-        let total_pixels = (w * h) as usize;
+        let total_pixels = (image_w * image_h) as usize;
         let mut count = 0;
-
-        let viewport = Viewport::new(2., w, h);
-
-        let camera = Camera::new(Point::origin(), 1.0, viewport);
 
         // Determine scan origin and step sizes once up front.
         // Camera position should be fixed for a single frame so we can avoid doing this for every pixel.
-        let first_pixel = camera.get_first_pixel();
-        let delta_u = camera.delta_u();
-        let delta_v = camera.delta_v();
+        let first_pixel = viewport.first_pixel;
+        let delta_u = viewport.delta_u;
+        let delta_v = viewport.delta_v;
 
-        for x in 0..w {
-            for y in 0..h {
+        for x in 0..image_w {
+            for y in 0..image_h {
                 count += 1;
 
                 Self::print_progress(total_pixels, count);
@@ -80,6 +95,6 @@ impl Renderer for PathTracer {
 
         println!(" -> Done!");
 
-        output.save()
+        Ok(output)
     }
 }

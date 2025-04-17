@@ -7,18 +7,12 @@ use std::path::Path;
 pub struct Image {
     w: u32,
     h: u32,
-    path: String,
     buffer: Option<RgbImage>,
 }
 
 impl Image {
-    pub fn new(w: u32, h: u32, path: String) -> Image {
-        Self {
-            path,
-            w,
-            h,
-            buffer: None,
-        }
+    pub fn new(w: u32, h: u32) -> Image {
+        Self { w, h, buffer: None }
     }
 }
 
@@ -43,11 +37,11 @@ impl Output for Image {
         }
     }
 
-    fn save(&mut self) -> () {
-        let path = Path::new(&self.path);
+    fn save(&self, save_path: &String) -> () {
+        let path = Path::new(save_path);
 
         match self.buffer {
-            Some(ref mut buffer) => {
+            Some(ref buffer) => {
                 buffer.save(path).expect("Failed to save image");
                 println!("Output image saved at {}", path.display());
             }

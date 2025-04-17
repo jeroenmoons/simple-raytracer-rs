@@ -1,46 +1,28 @@
-use crate::math::vector::{Point, Vec3};
-
-use super::viewport::Viewport;
+use crate::math::vector::Point;
 
 // Defines from where a scene is observed, what the camera sees is rendered to the output image
 pub struct Camera {
+    pub name: String,
+
+    // Position of the camera in the world
     pub center: Point,
-    pub focal_length: f32,
-    pub viewport: Viewport,
+
+    // TODO: Camera direction vector
+
+    // Camera field of vision
+    pub focal_length: f32, // Determines distance of the viewport from the camera
+    pub w: f32,            // Camera width in world units
+    pub aspect_ratio: f32, // Camera aspect ratio, determines height of the camera's view
 }
 
 impl Camera {
-    pub fn new(center: Point, focal_length: f32, viewport: Viewport) -> Self {
+    pub fn new(name: String, center: Point, focal_length: f32, w: f32, aspect_ratio: f32) -> Self {
         Self {
+            name,
             center,
             focal_length,
-            viewport,
+            w,
+            aspect_ratio,
         }
-    }
-
-    // Get vector pointing to the top left pixel of the camera's viewport.
-    pub fn get_first_pixel(&self) -> Point {
-        let focal_length_vector = Point::new(0., 0., self.focal_length);
-
-        // Steps from the camera's center to the top left of the viewport
-        let viewport_origin = self.center - focal_length_vector - self.u() / 2. - self.v() / 2.;
-
-        viewport_origin + 0.5 * (self.delta_u() + self.delta_v())
-    }
-
-    // Vectors u and v are spanning width and height of the viewport
-    pub fn u(&self) -> Vec3 {
-        Vec3::new(self.viewport.w, 0., 0.) // TODO: dynamic camera orientation
-    }
-    pub fn v(&self) -> Vec3 {
-        Vec3::new(0., -self.viewport.h, 0.) // TODO: dynamic camera orientation
-    }
-
-    // Vectors delta_u and delta_v define the step size between pixels on the viewport plane
-    pub fn delta_u(&self) -> Vec3 {
-        self.u() / self.viewport.image_w as f32
-    }
-    pub fn delta_v(&self) -> Vec3 {
-        self.v() / self.viewport.image_h as f32
     }
 }

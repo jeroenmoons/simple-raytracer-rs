@@ -6,15 +6,15 @@
 use std::time::Instant;
 // Clap is used to define the cli declaratively
 use clap::{Parser, Subcommand, ValueEnum};
-use srt::output::image::Image;
+use srt::output::output::OutputType;
 use srt::render::helloworld::HelloWorld;
 use srt::render::pathtracer::PathTracer;
 use srt::render::renderer::Renderer;
+use srt::scene::scene::Scene;
 use srt::scenes;
 
-// Default output image dimensions
+// Default output image width. Height is determined by this and the camera aspect ratio
 const DEFAULT_WIDTH: u32 = 800;
-const DEFAULT_HEIGHT: u32 = 600;
 
 // Clap maps cli command string to this struct
 #[derive(Parser)]
@@ -28,13 +28,13 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Render {
+        scene: SceneName,
+        #[arg(short, long, default_value = "out/out.png")]
         output_image: String,
         #[arg(short, long, default_value_t = Algorithm::PathTracer, value_enum)]
         algorithm: Algorithm,
         #[arg(long, default_value_t = DEFAULT_WIDTH)]
         width: u32,
-        #[arg(long, default_value_t = DEFAULT_HEIGHT)]
-        height: u32,
     },
 }
 
@@ -46,6 +46,15 @@ pub enum Algorithm {
     PathTracer,
 }
 
+// Available scenes
+#[derive(ValueEnum, Clone, Copy, Debug)]
+enum SceneName {
+    Empty,
+    SingleOrb,
+    SmallOrbInFrontOfLargerOne,
+    SmallOrbWithGround,
+}
+
 fn main() {
     let cli = Cli::parse();
 
@@ -54,20 +63,18 @@ fn main() {
     match &cli.command {
         Some(Commands::Render {
             algorithm,
+            scene,
             output_image,
             width,
-            height,
         }) => {
-            // TODO scene from cli argument/flag
-            // let scene = scenes::single_orb::generate();
-            let scene: srt::scene::scene::Scene = scenes::small_orb_with_ground::generate();
-            // let scene: srt::scene::scene::Scene = scenes::small_orb_in_front_of_larger_one::generate();
+            let scene = select_scene(*scene);
 
-            let mut renderer = get_renderer(&algorithm);
+            let mut renderer = select_renderer(&algorithm);
 
-            let mut output = Image::new(*width, *height, output_image.to_string());
-
-            renderer.render(&scene, *width, *height, &mut output);
+            match renderer.render(&scene, String::from("main"), *width, OutputType::PNG) {
+                Ok(output) => output.save(output_image),
+                Err(err) => panic!("Error rendering {err}"),
+            }
         }
         _ => {
             println!("Specify a subcommand");
@@ -78,9 +85,20 @@ fn main() {
 }
 
 // Returns a renderer object for the specified Algorithm
-fn get_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
+fn select_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
     match &algorithm {
         Algorithm::HelloWorld => Box::new(HelloWorld::new()),
         Algorithm::PathTracer => Box::new(PathTracer::new()),
+    }
+}
+
+fn select_scene(name: SceneName) -> Scene {
+    match name {
+        SceneName::Empty => scenes::empty::generate(),
+        SceneName::SingleOrb => scenes::single_orb::generate(),
+        SceneName::SmallOrbInFrontOfLargerOne => {
+            scenes::small_orb_in_front_of_larger_one::generate()
+        }
+        SceneName::SmallOrbWithGround => scenes::small_orb_with_ground::generate(),
     }
 }

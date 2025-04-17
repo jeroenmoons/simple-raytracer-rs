@@ -2,13 +2,19 @@ use super::object::{Hit, Object};
 use crate::geometry::ray::{Ray, T_MAX, T_MIN};
 use crate::math::numbers::Interval;
 use crate::math::vector::Color;
+use crate::scene::camera::Camera;
 
 pub struct Scene {
     pub name: String,
+    pub cameras: Vec<Camera>,
     pub objects: Vec<Box<dyn Object>>,
 }
 
 impl Scene {
+    pub fn get_camera(&self, name: &String) -> Option<&Camera> {
+        self.cameras.iter().find(|c| c.name == *name)
+    }
+
     pub fn trace(&self, ray: &Ray) -> Option<Color> {
         let t_min = T_MIN;
         let mut t_max = T_MAX;

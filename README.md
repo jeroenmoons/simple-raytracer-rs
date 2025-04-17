@@ -24,8 +24,8 @@ cargo run render out.png
 # Run a different algorithm, the hello-world renderer in this case
 cargo run render helloworld.png -a hello-world
 
-# Produce a 400x300 png image
-cargo run render out_400x300.png --width 400 --height 300
+# Produce a png image 400 pixels wide (height depends on the camera's aspect ratio)
+cargo run render out_400x300.png --width 400
 
 # Compile optimized binary (important when profiling to get representative results)
 cargo build --release
