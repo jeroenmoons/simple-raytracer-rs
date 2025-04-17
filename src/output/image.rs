@@ -1,4 +1,5 @@
 use super::output::Output;
+use crate::math::numbers::Interval;
 use crate::math::vector::Color;
 use image::{Rgb, RgbImage};
 use std::path::Path;
@@ -8,11 +9,17 @@ pub struct Image {
     w: u32,
     h: u32,
     buffer: Option<RgbImage>,
+    intensity: Interval,
 }
 
 impl Image {
     pub fn new(w: u32, h: u32) -> Image {
-        Self { w, h, buffer: None }
+        Self {
+            w,
+            h,
+            buffer: None,
+            intensity: Interval::new(0.0, 0.999),
+        }
     }
 }
 
@@ -27,9 +34,9 @@ impl Output for Image {
                 x,
                 y,
                 Rgb([
-                    (c.x() * 255.) as u8,
-                    (c.y() * 255.) as u8,
-                    (c.z() * 255.) as u8,
+                    (self.intensity.clamp(c.x()) * 255.) as u8,
+                    (self.intensity.clamp(c.y()) * 255.) as u8,
+                    (self.intensity.clamp(c.z()) * 255.) as u8,
                 ]),
             );
         } else {

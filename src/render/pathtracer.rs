@@ -1,21 +1,47 @@
 use crate::geometry::ray::Ray;
-use crate::math::vector::Color;
+use crate::math::chance::random_f32;
+use crate::math::vector::{Color, Vec3};
 use crate::output::output::{Output, OutputType};
 use crate::render::renderer::{Renderer, get_output};
+use crate::scene::camera::Camera;
 use crate::scene::scene::Scene;
 use crate::scene::viewport::Viewport;
 use std::io;
 use std::io::Write;
 
 // Renders a Scene to output using a path tracing algorithm
-pub struct PathTracer {}
+pub struct PathTracer {
+    samples_per_pixel: u32,
+    pixel_samples_scale: f32,
+}
 
 impl PathTracer {
     pub fn new() -> Self {
-        Self {}
+        let samples_per_pixel = 10; // TODO: make cli param
+
+        Self {
+            samples_per_pixel,
+            pixel_samples_scale: 1.0 / samples_per_pixel as f32,
+        }
     }
 
-    fn calculate_pixel(scene: &Scene, ray: &Ray) -> Color {
+    fn get_ray(&self, camera: &Camera, viewport: &Viewport, x: u32, y: u32) -> Ray {
+        let offset = self.sample_square();
+
+        // Get the center location of the pixel on the viewport plane to calculate its color
+        let pixel = viewport.first_pixel
+            + ((x as f32 + offset.x()) * viewport.delta_u)
+            + ((y as f32 + offset.y()) * viewport.delta_v);
+
+        // Construct a ray originating at the camera center pointed towards the pixel we are rendering
+        Ray::new(camera.center, pixel)
+    }
+
+    fn sample_square(&self) -> Vec3 {
+        Vec3::new(random_f32(0., 1.) - 0.5, random_f32(0., 1.) - 0.5, 0.)
+    }
+
+    fn calculate_pixel(&self, scene: &Scene, ray: &Ray) -> Color {
         match scene.trace(ray) {
             Some(color) => color, // Something in the scene determined the pixel's color
             _ => {
@@ -70,20 +96,22 @@ impl Renderer for PathTracer {
         for x in 0..image_w {
             for y in 0..image_h {
                 count += 1;
-
                 Self::print_progress(total_pixels, count);
 
-                // Get the center location of the pixel on the viewport plane to calculate its color
-                let pixel = viewport.first_pixel
-                    + (x as f32 * viewport.delta_u)
-                    + (y as f32 * viewport.delta_v);
+                let mut color = Color::origin();
 
-                // Construct a ray originating at the camera center pointed towards the pixel we are rendering
-                let ray = Ray::new(camera.center, pixel);
+                // We sample a number of rays for the same pixel and use the average color. This
+                // implements antialiasing.
+                for _ in 0..self.samples_per_pixel {
+                    let ray = self.get_ray(&camera, &viewport, x, y);
 
-                // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
-                // on the Scene geometry, lights, materials, ...
-                let color = Self::calculate_pixel(&scene, &ray);
+                    // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
+                    // on the Scene geometry, lights, materials, ...
+                    color = color + self.calculate_pixel(scene, &ray);
+                }
+
+                // We have added colors for all samples, now we calculate the average
+                color = color * self.pixel_samples_scale;
 
                 output.put_pixel(x, y, &color);
             }

@@ -6,6 +6,7 @@ pub mod geometry {
 }
 pub mod math {
     pub mod angles;
+    pub mod chance;
     pub mod constants;
     pub mod numbers;
     pub mod vector;
