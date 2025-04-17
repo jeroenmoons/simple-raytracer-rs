@@ -11,15 +11,15 @@ impl Interval {
 
     pub fn empty() -> Self {
         Self {
-            min: core::f32::INFINITY,
-            max: -core::f32::INFINITY,
+            min: f32::INFINITY,
+            max: -f32::INFINITY,
         }
     }
 
     pub fn universe() -> Self {
         Self {
-            min: -core::f32::INFINITY,
-            max: core::f32::INFINITY,
+            min: -f32::INFINITY,
+            max: f32::INFINITY,
         }
     }
 

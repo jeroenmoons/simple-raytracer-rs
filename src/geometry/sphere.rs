@@ -15,6 +15,7 @@ impl Sphere {
 }
 
 impl Object for Sphere {
+    // TODO: write tests
     fn hit_by(&self, ray: &Ray, within: Interval) -> (bool, Option<Hit>) {
         let oc = self.center - ray.origin;
         let a = ray.direction.length_squared();

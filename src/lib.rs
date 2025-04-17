@@ -27,7 +27,7 @@ pub mod scene {
 }
 pub mod scenes {
     pub mod empty;
+    pub mod orb_with_ground;
     pub mod single_orb;
     pub mod small_orb_in_front_of_larger_one;
-    pub mod small_orb_with_ground;
 }

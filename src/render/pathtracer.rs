@@ -51,7 +51,7 @@ impl Renderer for PathTracer {
             .ok_or(format!("Camera {camera_name} not found"))?;
 
         let viewport = Viewport::from(camera, image_w);
-        let image_h = viewport.image_h;
+        let image_h = viewport.image_h; // Height is determined from specified width and camera aspect ratio
 
         let mut output = get_output(image_w, image_h, &output_type);
 
@@ -67,12 +67,6 @@ impl Renderer for PathTracer {
         let total_pixels = (image_w * image_h) as usize;
         let mut count = 0;
 
-        // Determine scan origin and step sizes once up front.
-        // Camera position should be fixed for a single frame so we can avoid doing this for every pixel.
-        let first_pixel = viewport.first_pixel;
-        let delta_u = viewport.delta_u;
-        let delta_v = viewport.delta_v;
-
         for x in 0..image_w {
             for y in 0..image_h {
                 count += 1;
@@ -80,7 +74,9 @@ impl Renderer for PathTracer {
                 Self::print_progress(total_pixels, count);
 
                 // Get the center location of the pixel on the viewport plane to calculate its color
-                let pixel = first_pixel + (x as f32 * delta_u) + (y as f32 * delta_v);
+                let pixel = viewport.first_pixel
+                    + (x as f32 * viewport.delta_u)
+                    + (y as f32 * viewport.delta_v);
 
                 // Construct a ray originating at the camera center pointed towards the pixel we are rendering
                 let ray = Ray::new(camera.center, pixel);

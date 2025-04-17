@@ -11,7 +11,7 @@ pub fn generate() -> Scene {
     let sphere_two = Sphere::new(center_two, 100.);
 
     Scene {
-        name: String::from("Small sphere above a huge one"),
+        name: String::from("Small sphere above ground"),
         cameras: vec![camera],
         objects: vec![Box::new(sphere_one), Box::new(sphere_two)],
     }

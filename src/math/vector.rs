@@ -97,7 +97,7 @@ impl Add for Vec3 {
     }
 }
 
-// Support inline subtrqction Vec3 + Vec3
+// Support inline subtraction Vec3 + Vec3
 impl Sub for Vec3 {
     type Output = Self;
     fn sub(self, other: Self) -> Self::Output {

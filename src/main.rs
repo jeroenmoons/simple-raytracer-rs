@@ -99,6 +99,6 @@ fn select_scene(name: SceneName) -> Scene {
         SceneName::SmallOrbInFrontOfLargerOne => {
             scenes::small_orb_in_front_of_larger_one::generate()
         }
-        SceneName::SmallOrbWithGround => scenes::small_orb_with_ground::generate(),
+        SceneName::SmallOrbWithGround => scenes::orb_with_ground::generate(),
     }
 }
