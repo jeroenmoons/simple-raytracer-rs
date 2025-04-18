@@ -1,7 +1,6 @@
 use super::object::{Hit, Object};
 use crate::geometry::ray::{Ray, T_MAX, T_MIN};
 use crate::math::numbers::Interval;
-use crate::math::vector::Color;
 use crate::scene::camera::Camera;
 
 pub struct Scene {
@@ -15,7 +14,8 @@ impl Scene {
         self.cameras.iter().find(|c| c.name == *name)
     }
 
-    pub fn trace(&self, ray: &Ray) -> Option<Color> {
+    // TODO: write tests
+    pub fn trace(&self, ray: &Ray) -> (Option<&Box<dyn Object>>, Option<Hit>) {
         let t_min = T_MIN;
         let mut t_max = T_MAX;
         let mut closest: (Option<&Box<dyn Object>>, Option<Hit>) = (None, None);
@@ -32,9 +32,6 @@ impl Scene {
             }
         }
 
-        match closest {
-            (Some(_obj), Some(hit)) => Some(0.5 * (hit.normal + Color::new(1., 1., 1.))),
-            _ => None,
-        }
+        closest
     }
 }

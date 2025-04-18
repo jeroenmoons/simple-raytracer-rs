@@ -2,6 +2,8 @@ use std::fmt;
 use std::fmt::Display;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
+use super::chance::random_f32;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(transparent)] // guarantees layout compatibility as long as the struct has exactly one non-ZST (zero-sized type) field.
 pub struct Vec3 {
@@ -22,10 +24,51 @@ impl Vec3 {
         Self::new(0., 0., 0.)
     }
 
+    pub fn zero() -> Self {
+        Self::new(0., 0., 0.)
+    }
+
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self {
             inner: glam::Vec3::new(x, y, z),
         }
+    }
+
+    pub fn random() -> Self {
+        Self::random_minmax(0., 1.)
+    }
+
+    pub fn random_minmax(min: f32, max: f32) -> Self {
+        Self::new(
+            random_f32(min, max),
+            random_f32(min, max),
+            random_f32(min, max),
+        )
+    }
+
+    // Return a random Vector of unit length
+    pub fn random_unit() -> Self {
+        // Retry until random vector is inside the unit sphere -
+        // we exclude the corners of the bounding cube, not sure why that is necessary.
+        loop {
+            let p = Self::random_minmax(-1., 1.);
+            let length_squared = p.length_squared();
+            // The 1.0e-80 check prevents too short vectors from resulting in a division by zero
+            if 1.0e-80 < length_squared && length_squared <= 1. {
+                return p / length_squared.sqrt();
+            }
+        }
+    }
+
+    // Generate a random Vector that is located on the same hemisphere as the specified normal vector
+    pub fn random_unit_on_hemisphere(normal: &Vec3) -> Vec3 {
+        let on_unit_sphere = Self::random_unit();
+
+        if on_unit_sphere.dot(*normal) > 0. {
+            return on_unit_sphere; // Random vector is on the same hemisphere as the specified normal
+        }
+
+        return -on_unit_sphere; // Random vector is on the other hemisphere, invert it to bring it into the same hemisphere
     }
 
     pub fn x(&self) -> f32 {
@@ -186,6 +229,53 @@ mod tests {
         assert_eq!(a_point.x(), 0.5);
         assert_eq!(a_point.y(), 0.42);
         assert_eq!(a_point.z(), 0.8);
+    }
+
+    #[test]
+    fn it_generates_random_vectors() {
+        for _ in 0..100 {
+            let random_vector = Vec3::random();
+
+            assert_eq!(random_vector.x() >= 0., true);
+            assert_eq!(random_vector.x() < 1., true);
+            assert_eq!(random_vector.y() >= 0., true);
+            assert_eq!(random_vector.y() < 1., true);
+            assert_eq!(random_vector.z() >= 0., true);
+            assert_eq!(random_vector.z() < 1., true);
+        }
+
+        for _ in 0..100 {
+            let random_vector = Vec3::random_minmax(5., 6.);
+
+            assert_eq!(random_vector.x() >= 5., true);
+            assert_eq!(random_vector.x() < 6., true);
+            assert_eq!(random_vector.y() >= 5., true);
+            assert_eq!(random_vector.y() < 6., true);
+            assert_eq!(random_vector.z() >= 5., true);
+            assert_eq!(random_vector.z() < 6., true);
+        }
+
+        for _ in 0..100 {
+            let random_vector = Vec3::random_minmax(0.3, 0.4);
+
+            assert_eq!(random_vector.x() >= 0.3, true);
+            assert_eq!(random_vector.x() < 0.4, true);
+            assert_eq!(random_vector.y() >= 0.3, true);
+            assert_eq!(random_vector.y() < 0.4, true);
+            assert_eq!(random_vector.z() >= 0.3, true);
+            assert_eq!(random_vector.z() < 0.4, true);
+        }
+
+        for _ in 0..100 {
+            let random_vector = Vec3::random_minmax(-10., -9.);
+
+            assert_eq!(random_vector.x() >= -10., true);
+            assert_eq!(random_vector.x() < -9., true);
+            assert_eq!(random_vector.y() >= -10., true);
+            assert_eq!(random_vector.y() < -9., true);
+            assert_eq!(random_vector.z() >= -10., true);
+            assert_eq!(random_vector.z() < -9., true);
+        }
     }
 
     #[test]

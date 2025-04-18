@@ -13,15 +13,17 @@ use std::io::Write;
 pub struct PathTracer {
     samples_per_pixel: u32,
     pixel_samples_scale: f32,
+    max_depth: u32, // Maximum number of ray bounces into scene
 }
 
 impl PathTracer {
     pub fn new() -> Self {
-        let samples_per_pixel = 10; // TODO: make cli param
+        let samples_per_pixel = 10; // TODO: make cli arg
 
         Self {
             samples_per_pixel,
             pixel_samples_scale: 1.0 / samples_per_pixel as f32,
+            max_depth: 50, // TODO: make cli arg
         }
     }
 
@@ -41,9 +43,21 @@ impl PathTracer {
         Vec3::new(random_f32(0., 1.) - 0.5, random_f32(0., 1.) - 0.5, 0.)
     }
 
-    fn calculate_pixel(&self, scene: &Scene, ray: &Ray) -> Color {
+    fn calculate_pixel(&self, scene: &Scene, ray: &Ray, depth: u32) -> Color {
+        if depth <= 0 {
+            // Max depth reached, stop tracing
+            return Color::zero(); // Contribute no more light to the pixel
+        }
+
         match scene.trace(ray) {
-            Some(color) => color, // Something in the scene determined the pixel's color
+            (Some(_obj), Some(hit)) => {
+                // Object was hit, let the ray scatter in a random direction (basic diffuse material)
+                let random_scatter = Vec3::random_unit_on_hemisphere(&hit.normal);
+                // Contribute half the light from the randomly scattered ray's color.
+                // This approach results in objects that pick up a dimmed version of the background color, since
+                // rays keep bouncing until they hit nothing and then get a background gradient color from the branch below.
+                0.5 * self.calculate_pixel(&scene, &Ray::new(hit.p, random_scatter), depth - 1)
+            }
             _ => {
                 // Nothing was hit, fall back to background gradient
                 let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1
@@ -98,7 +112,7 @@ impl Renderer for PathTracer {
                 count += 1;
                 Self::print_progress(total_pixels, count);
 
-                let mut color = Color::origin();
+                let mut color = Color::zero();
 
                 // We sample a number of rays for the same pixel and use the average color. This
                 // implements antialiasing.
@@ -107,7 +121,7 @@ impl Renderer for PathTracer {
 
                     // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
                     // on the Scene geometry, lights, materials, ...
-                    color = color + self.calculate_pixel(scene, &ray);
+                    color = color + self.calculate_pixel(scene, &ray, self.max_depth);
                 }
 
                 // We have added colors for all samples, now we calculate the average
