@@ -19,7 +19,3 @@ target/
 # Added by cargo
 
 /target
-
-*.png
-*.jpg
-*.jpeg
