@@ -3,8 +3,14 @@ use std::fmt::Display;
 
 use crate::math::vector::{Point, Vec3};
 
-// Defines the acceptable range within which a Ray intersection with an Object must lie
-pub const T_MIN: f32 = 0.0001; // Arbitrary value for now, what is reasonable?
+// T_MIN and T_MAX define the acceptable range within which a Ray intersection with an Object must lie.
+// Setting T_MIN to 0 means we might find intersections VERY close to the ray's origin, and due to the limited
+// precision of a f32 number, rounding errors can cause use to find solutions that are not perfectly flush with
+// the surface of a body. If we end up just inside, a T_MIN of 0 means we will intersect with the object again.
+// The net result is that rays in this situation will become very dark and cause 'shadow acne'. Setting T_MIN
+// a bit higher than 0 makes the algorithm less sensitive to this effect.
+pub const T_MIN: f32 = 0.001;
+
 pub const T_MAX: f32 = 1000.0; // Arbitrary value for now, what is reasonable?
 
 // Represents a ray originating at a Camera's eye point and propagating through the Scene

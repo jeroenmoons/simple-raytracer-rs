@@ -88,7 +88,7 @@ fn main() {
 fn select_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
     match &algorithm {
         Algorithm::HelloWorld => Box::new(HelloWorld::new()),
-        Algorithm::PathTracer => Box::new(PathTracer::new()),
+        Algorithm::PathTracer => Box::new(PathTracer::new(100, 50)),
     }
 }
 

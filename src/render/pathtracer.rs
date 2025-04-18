@@ -17,13 +17,11 @@ pub struct PathTracer {
 }
 
 impl PathTracer {
-    pub fn new() -> Self {
-        let samples_per_pixel = 10; // TODO: make cli arg
-
+    pub fn new(samples_per_pixel: u32, max_depth: u32) -> Self {
         Self {
             samples_per_pixel,
             pixel_samples_scale: 1.0 / samples_per_pixel as f32,
-            max_depth: 50, // TODO: make cli arg
+            max_depth,
         }
     }
 
@@ -53,10 +51,15 @@ impl PathTracer {
             (Some(_obj), Some(hit)) => {
                 // Object was hit, let the ray scatter in a random direction (basic diffuse material)
                 let random_scatter = Vec3::random_unit_on_hemisphere(&hit.normal);
+
+                // To make the material lambertian, the random scatter should be more likely to stick to the normal,
+                // this can be done by adding the random scatter vector to the normal instead of flat-out replacing it
+                let lambert_scatter = hit.normal + random_scatter;
+
                 // Contribute half the light from the randomly scattered ray's color.
                 // This approach results in objects that pick up a dimmed version of the background color, since
                 // rays keep bouncing until they hit nothing and then get a background gradient color from the branch below.
-                0.5 * self.calculate_pixel(&scene, &Ray::new(hit.p, random_scatter), depth - 1)
+                0.5 * self.calculate_pixel(&scene, &Ray::new(hit.p, lambert_scatter), depth - 1)
             }
             _ => {
                 // Nothing was hit, fall back to background gradient
