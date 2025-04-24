@@ -19,6 +19,8 @@ pub struct Vec3 {
 pub type Color = Vec3;
 pub type Point = Vec3;
 
+const NEAR_ZERO_THRESHOLD: f32 = 1e-8;
+
 impl Vec3 {
     pub fn origin() -> Self {
         Self::new(0., 0., 0.)
@@ -68,7 +70,7 @@ impl Vec3 {
             return on_unit_sphere; // Random vector is on the same hemisphere as the specified normal
         }
 
-        return -on_unit_sphere; // Random vector is on the other hemisphere, invert it to bring it into the same hemisphere
+        -on_unit_sphere // Random vector is on the other hemisphere, invert it to bring it into the same hemisphere
     }
 
     pub fn x(&self) -> f32 {
@@ -113,6 +115,12 @@ impl Vec3 {
         Self {
             inner: self.inner.normalize(),
         }
+    }
+
+    pub fn near_zero(&self) -> bool {
+        let s = NEAR_ZERO_THRESHOLD;
+
+        self.x().abs() < s && self.y().abs() < s && self.z().abs() < s
     }
 }
 

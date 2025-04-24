@@ -49,10 +49,11 @@ pub enum Algorithm {
 // Available scenes
 #[derive(ValueEnum, Clone, Copy, Debug)]
 enum SceneName {
+    DiffuseOrb,
+    LambertOrb,
     Empty,
-    SingleOrb,
+    OrbWithGroundLambert,
     SmallOrbInFrontOfLargerOne,
-    OrbWithGround,
 }
 
 fn main() {
@@ -95,10 +96,11 @@ fn select_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
 fn select_scene(name: SceneName) -> Scene {
     match name {
         SceneName::Empty => scenes::empty::generate(),
-        SceneName::SingleOrb => scenes::single_orb::generate(),
+        SceneName::DiffuseOrb => scenes::diffuse_orb::generate(),
+        SceneName::LambertOrb => scenes::lambert_orb::generate(),
         SceneName::SmallOrbInFrontOfLargerOne => {
             scenes::small_orb_in_front_of_larger_one::generate()
         }
-        SceneName::OrbWithGround => scenes::orb_with_ground::generate(),
+        SceneName::OrbWithGroundLambert => scenes::orb_with_ground_lambert::generate(),
     }
 }

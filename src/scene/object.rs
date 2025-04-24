@@ -1,9 +1,11 @@
 use crate::geometry::ray::Ray;
+use crate::material::base::Material;
 use crate::math::numbers::Interval;
 use crate::math::vector::{Point, Vec3};
 
 // Parent for anything that is part of a scene and can have an effect on the rendered output
 pub trait Object {
+    fn material(&self) -> &dyn Material;
     fn hit_by(&self, ray: &Ray, within: Interval) -> (bool, Option<Hit>);
 }
 

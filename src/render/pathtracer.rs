@@ -48,19 +48,12 @@ impl PathTracer {
         }
 
         match scene.trace(ray) {
-            (Some(_obj), Some(hit)) => {
-                // Object was hit, let the ray scatter in a random direction (basic diffuse material)
-                let random_scatter = Vec3::random_unit_on_hemisphere(&hit.normal);
-
-                // To make the material lambertian, the random scatter should be more likely to stick to the normal,
-                // this can be done by adding the random scatter vector to the normal instead of flat-out replacing it
-                let lambert_scatter = hit.normal + random_scatter;
-
-                // Contribute half the light from the randomly scattered ray's color.
-                // This approach results in objects that pick up a dimmed version of the background color, since
-                // rays keep bouncing until they hit nothing and then get a background gradient color from the branch below.
-                0.5 * self.calculate_pixel(&scene, &Ray::new(hit.p, lambert_scatter), depth - 1)
-            }
+            (Some(obj), Some(hit)) => match obj.material().scatter(&ray, &hit) {
+                Some((scatter, attenuation)) => {
+                    attenuation * self.calculate_pixel(scene, &scatter, depth - 1)
+                }
+                None => Color::zero(), // No scattering, do not contribute any light
+            },
             _ => {
                 // Nothing was hit, fall back to background gradient
                 let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1

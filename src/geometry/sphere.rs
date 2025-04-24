@@ -1,4 +1,5 @@
 use super::ray::Ray;
+use crate::material::base::Material;
 use crate::math::numbers::Interval;
 use crate::scene::object::Hit;
 use crate::{math::vector::Point, scene::object::Object};
@@ -6,15 +7,24 @@ use crate::{math::vector::Point, scene::object::Object};
 pub struct Sphere {
     pub center: Point,
     pub radius: f32,
+    pub material: Box<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Point, radius: f32) -> Self {
-        Self { center, radius }
+    pub fn new(center: Point, radius: f32, material: Box<dyn Material>) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
 impl Object for Sphere {
+    fn material(&self) -> &dyn Material {
+        &*self.material
+    }
+
     // TODO: write tests
     fn hit_by(&self, ray: &Ray, within: Interval) -> (bool, Option<Hit>) {
         let oc = self.center - ray.origin;

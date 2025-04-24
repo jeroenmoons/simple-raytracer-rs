@@ -4,6 +4,10 @@ pub mod geometry {
     pub mod ray;
     pub mod sphere;
 }
+pub mod material {
+    pub mod base;
+    pub mod diffuse;
+}
 pub mod math {
     pub mod angles;
     pub mod chance;
@@ -27,8 +31,9 @@ pub mod scene {
     pub mod viewport;
 }
 pub mod scenes {
+    pub mod diffuse_orb;
     pub mod empty;
-    pub mod orb_with_ground;
-    pub mod single_orb;
+    pub mod lambert_orb;
+    pub mod orb_with_ground_lambert;
     pub mod small_orb_in_front_of_larger_one;
 }
