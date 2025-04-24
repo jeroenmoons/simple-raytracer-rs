@@ -122,6 +122,12 @@ impl Vec3 {
 
         self.x().abs() < s && self.y().abs() < s && self.z().abs() < s
     }
+
+    pub fn reflect(&self, normal: &Vec3) -> Self {
+        Self {
+            inner: self.inner - 2. * self.inner.dot(normal.inner) * normal.inner,
+        }
+    }
 }
 
 impl Display for Vec3 {
@@ -402,5 +408,17 @@ mod tests {
         assert_eq!(a == b, true);
         assert_eq!(a == c, false);
         assert_eq!(b == c, false);
+    }
+
+    #[test]
+    fn it_reflects() {
+        let v = Vec3::new(3., -3., 0.);
+        let normal = Vec3::new(0., 1., 0.);
+
+        let reflected = v.reflect(&normal);
+
+        assert_eq!(reflected.x(), 3.);
+        assert_eq!(reflected.y(), 3.);
+        assert_eq!(reflected.z(), 0.);
     }
 }

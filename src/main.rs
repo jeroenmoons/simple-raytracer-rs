@@ -52,6 +52,7 @@ enum SceneName {
     DiffuseOrb,
     LambertOrb,
     Empty,
+    MetalOrbsWithGround,
     OrbWithGroundLambert,
     SmallOrbInFrontOfLargerOne,
 }
@@ -98,6 +99,7 @@ fn select_scene(name: SceneName) -> Scene {
         SceneName::Empty => scenes::empty::generate(),
         SceneName::DiffuseOrb => scenes::diffuse_orb::generate(),
         SceneName::LambertOrb => scenes::lambert_orb::generate(),
+        SceneName::MetalOrbsWithGround => scenes::metal_orbs_with_ground::generate(),
         SceneName::SmallOrbInFrontOfLargerOne => {
             scenes::small_orb_in_front_of_larger_one::generate()
         }

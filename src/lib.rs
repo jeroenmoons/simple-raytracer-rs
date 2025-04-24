@@ -7,6 +7,7 @@ pub mod geometry {
 pub mod material {
     pub mod base;
     pub mod diffuse;
+    pub mod metal;
 }
 pub mod math {
     pub mod angles;
@@ -34,6 +35,7 @@ pub mod scenes {
     pub mod diffuse_orb;
     pub mod empty;
     pub mod lambert_orb;
+    pub mod metal_orbs_with_ground;
     pub mod orb_with_ground_lambert;
     pub mod small_orb_in_front_of_larger_one;
 }
