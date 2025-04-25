@@ -43,7 +43,9 @@ enum Commands {
 pub enum Algorithm {
     #[default]
     HelloWorld,
+    PathTracerLowRes,
     PathTracer,
+    PathTracerHighRes,
 }
 
 // Available scenes
@@ -91,6 +93,8 @@ fn select_renderer(algorithm: &Algorithm) -> Box<dyn Renderer> {
     match &algorithm {
         Algorithm::HelloWorld => Box::new(HelloWorld::new()),
         Algorithm::PathTracer => Box::new(PathTracer::new(100, 50)),
+        Algorithm::PathTracerLowRes => Box::new(PathTracer::new(10, 50)),
+        Algorithm::PathTracerHighRes => Box::new(PathTracer::new(1000, 100)),
     }
 }
 
