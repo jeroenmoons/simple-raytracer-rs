@@ -15,20 +15,20 @@ pub fn generate() -> Scene {
 
     let center_sphere = Sphere::new(
         Point::new(0., 0., -1.2),
-        0.6,
+        0.5,
         Box::from(Lambert::new(Color::new(0.1, 0.2, 0.5))),
     );
 
     let left_sphere = Sphere::new(
-        Point::new(-1.2, 0., -1.35),
-        0.55,
-        Box::from(Metal::new(Color::new(0.8, 0.8, 0.8), 0.1)),
+        Point::new(-1., 0., -1.),
+        0.5,
+        Box::from(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3)),
     );
 
     let right_sphere = Sphere::new(
-        Point::new(1.2, 0., -1.35),
-        0.55,
-        Box::from(Metal::new(Color::new(0.8, 0.6, 0.2), 0.3)),
+        Point::new(1., 0., -1.),
+        0.5,
+        Box::from(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0)),
     );
 
     Scene {

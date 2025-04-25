@@ -39,7 +39,10 @@ impl Material for Lambert {
     fn scatter(&self, _ray: &Ray, hit: &Hit) -> Option<(Ray, Color)> {
         // To make the material Lambertian, the random scatter should be more likely to stick to the normal,
         // this can be done by ADDING a random vector to the normal instead of flat-out replacing it
-        let mut lambert_scatter = hit.normal + Vec3::random_unit_on_hemisphere(&hit.normal);
+        let mut lambert_scatter = hit.normal + Vec3::random_unit();
+
+        // Using the scatter method below gives heavier shadows, not entirely sure why exactly
+        // let mut lambert_scatter = hit.normal + Vec3::random_unit_on_hemisphere(&hit.normal);
 
         if lambert_scatter.near_zero() {
             // If the scatter vector is almost zero it can lead to problems (NaN, infinities),
