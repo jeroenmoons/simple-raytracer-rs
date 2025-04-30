@@ -1,7 +1,5 @@
 use crate::math::vector::{Point, Vec3};
 use crate::scene::camera::Camera;
-use std::fmt;
-use std::fmt::Display;
 
 // In-scene representation of the rendered image.
 // Located in front of the Camera center at the focal length distance.
@@ -67,35 +65,5 @@ impl Viewport {
             delta_u,
             delta_v,
         }
-    }
-}
-
-impl Display for Viewport {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "Viewport(\
-                image_w {}, \
-                image_h {}, \
-                w {}, \
-                h {}, \
-                ar {}, \
-                first pixel {}, \
-                u {}, \
-                v {}, \
-                delta_u {}, \
-                delta_v {}\
-            )",
-            self.image_w,
-            self.image_h,
-            self.w,
-            self.h,
-            self.aspect_ratio,
-            self.first_pixel,
-            self.u,
-            self.v,
-            self.delta_u,
-            self.delta_v,
-        )
     }
 }

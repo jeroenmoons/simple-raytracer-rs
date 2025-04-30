@@ -96,7 +96,7 @@ impl Renderer for PathTracer {
             scene.name, output_type,
         );
 
-        println!("Viewport: {viewport}");
+        println!("Viewport: {viewport:#?}");
 
         output.init();
 
