@@ -28,4 +28,11 @@ impl Material for Metal {
 
         None
     }
+
+    fn describe(&self) -> String {
+        format!(
+            "Metal material with albedo {} and fuzz {}",
+            self.albedo, self.fuzz
+        )
+    }
 }

@@ -21,10 +21,21 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub fn new(from: Point, to: Point) -> Self {
+    // Constructs a ray starting at one point and traveling into the specified direction.
+    pub fn new(from: Point, direction: Vec3) -> Self {
         Self {
-            origin: from,
-            direction: to - from,
+            origin: from + direction * 0.001,
+            direction,
+        }
+    }
+
+    // Constructs a ray starting at one point and traveling towards a destination.
+    pub fn from_to(from: Point, to: Point) -> Self {
+        let direction = (to - from).unit();
+
+        Self {
+            origin: from + direction * 0.001,
+            direction,
         }
     }
 
@@ -59,7 +70,7 @@ mod tests {
         for (from, to, t, expected) in cases.iter() {
             let from = Point::new(from.0, from.1, from.2);
             let to = Vec3::new(to.0, to.1, to.2);
-            let ray = Ray::new(from, to);
+            let ray = Ray::from_to(from, to);
 
             let point_b = ray.at(*t);
 

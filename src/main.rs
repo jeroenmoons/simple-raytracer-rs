@@ -2,6 +2,8 @@
 //
 // Detailed treatment of how to structure a project:
 // https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
+#[macro_use]
+mod debug;
 
 use std::time::Instant;
 // Clap is used to define the cli declaratively
@@ -36,6 +38,15 @@ enum Commands {
         #[arg(long, default_value_t = DEFAULT_WIDTH)]
         width: u32,
     },
+    Debug {
+        scene: SceneName,
+        #[arg(short, long, default_value_t = Algorithm::PathTracer, value_enum)]
+        algorithm: Algorithm,
+        #[arg(long, default_value_t = DEFAULT_WIDTH)]
+        width: u32,
+        x: u32,
+        y: u32,
+    },
 }
 
 // Available rendering algorithms
@@ -52,10 +63,11 @@ pub enum Algorithm {
 #[derive(ValueEnum, Clone, Copy, Debug)]
 enum SceneName {
     DiffuseOrb,
-    LambertOrb,
     Empty,
+    LambertOrb,
     MetalOrbsWithGround,
     OrbWithGroundLambert,
+    Playground,
     SmallOrbInFrontOfLargerOne,
 }
 
@@ -79,6 +91,21 @@ fn main() {
                 Ok(output) => output.save(output_image),
                 Err(err) => panic!("Error rendering {err}"),
             }
+        }
+        Some(Commands::Debug {
+            algorithm,
+            scene,
+            width,
+            x,
+            y,
+        }) => {
+            ray_debug!("Ray debug enabled");
+
+            let scene = select_scene(*scene);
+
+            let mut renderer = select_renderer(&algorithm);
+
+            renderer.debug_ray(*x, *y, &scene, String::from("main"), *width)
         }
         _ => {
             println!("Specify a subcommand");
@@ -104,9 +131,10 @@ fn select_scene(name: SceneName) -> Scene {
         SceneName::DiffuseOrb => scenes::diffuse_orb::generate(),
         SceneName::LambertOrb => scenes::lambert_orb::generate(),
         SceneName::MetalOrbsWithGround => scenes::metal_orbs_with_ground::generate(),
+        SceneName::OrbWithGroundLambert => scenes::orb_with_ground_lambert::generate(),
+        SceneName::Playground => scenes::playground::generate(),
         SceneName::SmallOrbInFrontOfLargerOne => {
             scenes::small_orb_in_front_of_larger_one::generate()
         }
-        SceneName::OrbWithGroundLambert => scenes::orb_with_ground_lambert::generate(),
     }
 }

@@ -16,6 +16,8 @@ impl Scene {
 
     // TODO: write tests
     pub fn trace(&self, ray: &Ray) -> (Option<&Box<dyn Object>>, Option<Hit>) {
+        ray_debug!("Tracing ray {} through the scene", ray);
+
         let t_min = T_MIN;
         let mut t_max = T_MAX;
         let mut closest: (Option<&Box<dyn Object>>, Option<Hit>) = (None, None);
@@ -23,8 +25,15 @@ impl Scene {
         for obj in self.objects.iter() {
             match obj.hit_by(ray, Interval::new(t_min, t_max)) {
                 (true, Some(hit_params)) => {
+                    ray_debug!("Object hit: {}", obj.describe());
+
                     if hit_params.t < t_max {
-                        t_max = hit_params.t; // Any subsequent hits need to be closer to the camera than this one
+                        ray_debug!("This object is closest so far");
+
+                        // Any subsequent hits need to be closer to the ray's origin than this one
+                        // (we want to find the first thing the Ray hits, starting from its origin
+                        // and looking towards its direction)
+                        t_max = hit_params.t;
                         closest = (Some(obj), Some(hit_params));
                     }
                 }

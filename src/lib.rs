@@ -1,11 +1,15 @@
 // A `mod` statement is NOT an include or import but a declaration stating that a module exists.
 // This `mod` tree maps to the file tree under src to find module implementation code.
+#[macro_use]
+mod debug;
+
 pub mod geometry {
     pub mod ray;
     pub mod sphere;
 }
 pub mod material {
     pub mod base;
+    pub mod dielectric;
     pub mod diffuse;
     pub mod metal;
 }
@@ -37,5 +41,6 @@ pub mod scenes {
     pub mod lambert_orb;
     pub mod metal_orbs_with_ground;
     pub mod orb_with_ground_lambert;
+    pub mod playground;
     pub mod small_orb_in_front_of_larger_one;
 }

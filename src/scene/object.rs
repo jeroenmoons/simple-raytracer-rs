@@ -7,9 +7,11 @@ use crate::math::vector::{Point, Vec3};
 pub trait Object {
     fn material(&self) -> &dyn Material;
     fn hit_by(&self, ray: &Ray, within: Interval) -> (bool, Option<Hit>);
+    fn describe(&self) -> String;
 }
 
 // Represents a Ray hitting an object
+#[derive(Debug)]
 pub struct Hit {
     pub p: Point,         // Point at which Object is hit
     pub normal: Vec3,     // The normal to the Object at the hit point
@@ -24,9 +26,27 @@ impl Hit {
         let normal: Vec3;
         if front_face {
             normal = outward_normal;
+
+            ray_debug!(
+                "Ray hit the object at an angle of {}°",
+                normal.angle_between(ray.direction).to_degrees(),
+            );
         } else {
             normal = -outward_normal;
+
+            ray_debug!(
+                "Ray hit the object at an angle of {}°",
+                normal.angle_between(ray.direction).to_degrees(),
+            );
         }
+
+        ray_debug!(
+            "Hit at {:?}, front face? {}, outward normal {}, normal {}",
+            p,
+            front_face,
+            outward_normal,
+            normal
+        );
 
         Self {
             p,

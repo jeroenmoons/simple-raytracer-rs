@@ -128,6 +128,31 @@ impl Vec3 {
             inner: self.inner - 2. * self.inner.dot(normal.inner) * normal.inner,
         }
     }
+
+    // Calculates refracted vector relative to the normal specified, based on Snell's law - which
+    // relates the refractive indices of the material the vector travels through and the material
+    // the refracted vector travels through to the angles between these vectors and the normal.
+    // `etai_over_etat`: eta for incoming / eta for transmitted
+    pub fn refract(&self, normal: &Vec3, etai_over_etat: f32) -> Self {
+        // Calculate cos of the angle of the incoming vector with the normal
+        let cos_theta = (-self.inner).dot(normal.inner).min(1.);
+
+        // Calculate the components perpendicular and parallel to the normal separately
+        let r_out_perp = etai_over_etat * (self.inner + cos_theta * normal.inner);
+        let r_out_parallel = -((1.0 - r_out_perp.length_squared()).max(0.0).sqrt() * normal.inner);
+
+        Self {
+            // Sum of the two components constructs the refracted vector
+            inner: r_out_perp + r_out_parallel,
+        }
+    }
+
+    pub fn angle_between(&self, other: Vec3) -> f32 {
+        let dot = self.inner.dot(other.inner);
+        let mag_product = self.inner.length() * other.inner.length();
+        let cos_theta = (dot / mag_product).clamp(-1.0, 1.0);
+        cos_theta.acos() // in radians
+    }
 }
 
 impl Display for Vec3 {

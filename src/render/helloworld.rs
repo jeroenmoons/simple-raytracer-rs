@@ -56,4 +56,15 @@ impl Renderer for HelloWorld {
 
         Ok(output)
     }
+
+    fn debug_ray(
+        &mut self,
+        _x: u32,
+        _y: u32,
+        _scene: &Scene,
+        _camera_name: String,
+        _image_w: u32,
+    ) -> () {
+        ()
+    }
 }

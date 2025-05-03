@@ -21,6 +21,10 @@ impl Material for Diffuse {
 
         Some((Ray::new(hit.p, random_scatter), self.attenuation))
     }
+
+    fn describe(&self) -> String {
+        format!("Diffuse material with attenuation {}", self.attenuation)
+    }
 }
 
 // Basic Lambert material:
@@ -51,5 +55,9 @@ impl Material for Lambert {
         }
 
         Some((Ray::new(hit.p, lambert_scatter), self.albedo))
+    }
+
+    fn describe(&self) -> String {
+        format!("Lambertian material with albedo {}", self.albedo)
     }
 }

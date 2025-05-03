@@ -4,4 +4,5 @@ use crate::scene::object::Hit;
 
 pub trait Material {
     fn scatter(&self, ray: &Ray, hit: &Hit) -> Option<(Ray, Color)>;
+    fn describe(&self) -> String;
 }

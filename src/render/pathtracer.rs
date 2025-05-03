@@ -34,7 +34,7 @@ impl PathTracer {
             + ((y as f32 + offset.y()) * viewport.delta_v);
 
         // Construct a ray originating at the camera center pointed towards the pixel we are rendering
-        Ray::new(camera.center, pixel)
+        Ray::from_to(camera.center, pixel)
     }
 
     fn sample_square(&self) -> Vec3 {
@@ -42,7 +42,11 @@ impl PathTracer {
     }
 
     fn calculate_pixel(&self, scene: &Scene, ray: &Ray, depth: u32) -> Color {
+        ray_debug!("Depth {} - calculating pixel", depth);
+
         if depth <= 0 {
+            ray_debug!("Depth {} - max depth, color black", depth);
+
             // Max depth reached, stop tracing
             return Color::zero(); // Contribute no more light to the pixel
         }
@@ -50,11 +54,25 @@ impl PathTracer {
         match scene.trace(ray) {
             (Some(obj), Some(hit)) => match obj.material().scatter(&ray, &hit) {
                 Some((scatter, attenuation)) => {
+                    ray_debug!(
+                        "Depth {} - ray scattered to {} at an angle of {}°, current attenuation {}",
+                        depth,
+                        scatter,
+                        ray.direction.angle_between(scatter.direction).to_degrees(),
+                        attenuation
+                    );
+
                     attenuation * self.calculate_pixel(scene, &scatter, depth - 1)
                 }
-                None => Color::zero(), // No scattering, do not contribute any light
+                None => {
+                    ray_debug!("Depth {} - ray not scattered, returning black", depth);
+
+                    Color::zero() // No scattering, do not contribute any light}
+                }
             },
             _ => {
+                ray_debug!("NO HIT - USING BACKGROUND");
+
                 // Nothing was hit, fall back to background gradient
                 let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1
                 let a = 0.5 * unit_direction.y() + 1.0;
@@ -130,5 +148,37 @@ impl Renderer for PathTracer {
         println!(" -> Done!");
 
         Ok(output)
+    }
+
+    fn debug_ray(
+        &mut self,
+        x: u32,
+        y: u32,
+        scene: &Scene,
+        camera_name: String,
+        image_w: u32,
+    ) -> () {
+        let camera = scene.get_camera(&camera_name).unwrap();
+        let viewport = Viewport::from(camera, image_w);
+
+        ray_debug!(
+            "PathTracer debugging of ray at {},{} in scene {} - {} x {} image",
+            x,
+            y,
+            scene.name,
+            image_w,
+            viewport.image_h,
+        );
+
+        let ray = self.get_ray(&camera, &viewport, x, y);
+
+        ray_debug!("Tracing ray {}", ray);
+
+        // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
+        // on the Scene geometry, lights, materials, ...
+        println!(
+            "Pixel color: {:?}",
+            self.calculate_pixel(scene, &ray, self.max_depth)
+        );
     }
 }
