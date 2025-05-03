@@ -24,17 +24,17 @@ impl Ray {
     // Constructs a ray starting at one point and traveling into the specified direction.
     pub fn new(from: Point, direction: Vec3) -> Self {
         Self {
-            origin: from + direction * 0.001,
+            origin: from,
             direction,
         }
     }
 
     // Constructs a ray starting at one point and traveling towards a destination.
     pub fn from_to(from: Point, to: Point) -> Self {
-        let direction = (to - from).unit();
+        let direction = to - from;
 
         Self {
-            origin: from + direction * 0.001,
+            origin: from,
             direction,
         }
     }
