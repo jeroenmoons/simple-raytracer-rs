@@ -74,10 +74,10 @@ impl PathTracer {
                 ray_debug!("NO HIT - USING BACKGROUND");
 
                 // Nothing was hit, fall back to background gradient
-                let unit_direction = ray.direction.unit(); // Ray direction as a vector of length 1
+                let unit_direction = ray.direction.unit();
                 let a = 0.5 * unit_direction.y() + 1.0;
 
-                // Blend ("lerp", linear interpolation) between white and blue colors based on the ray's Y coordinate
+                // Blend (or "lerp", linear interpolation) of white and blue based on the ray's Y coordinate
                 (1.0 - a) * Color::new(1., 1., 1.) + a * Color::new(0.5, 0.7, 1.)
             }
         }
@@ -133,8 +133,8 @@ impl Renderer for PathTracer {
                 for _ in 0..self.samples_per_pixel {
                     let ray = self.get_ray(&camera, &viewport, x, y);
 
-                    // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
-                    // on the Scene geometry, lights, materials, ...
+                    // Simple line where the bulk of the complexity lies: find out which color the
+                    // pixel should have based on the Scene geometry, lights, materials, ...
                     color = color + self.calculate_pixel(scene, &ray, self.max_depth);
                 }
 
@@ -174,8 +174,6 @@ impl Renderer for PathTracer {
 
         ray_debug!("Tracing ray {}", ray);
 
-        // Simple line where the bulk of the complexity lies: find out which color the pixel should have based
-        // on the Scene geometry, lights, materials, ...
         println!(
             "Pixel color: {:?}",
             self.calculate_pixel(scene, &ray, self.max_depth)
