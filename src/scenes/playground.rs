@@ -6,7 +6,21 @@ use crate::scene::camera::Camera;
 use crate::{geometry::sphere::Sphere, math::vector::Point, scene::scene::Scene};
 
 pub fn generate() -> Scene {
-    let camera = Camera::new(String::from("main"), Point::origin(), 1., 4., 16. / 9.);
+    let camera_main = Camera::new(
+        String::from("main"),
+        Point::origin(),
+        Point::new(0., 0., -1.),
+        90.,
+        16. / 9.,
+    );
+
+    let camera_vantage = Camera::new(
+        String::from("vantage"),
+        Point::new(-2., 2., 1.),
+        Point::new(0., 0., -1.),
+        75.,
+        16. / 9.,
+    );
 
     let ground_sphere = Sphere::new(
         Point::new(0., -100.5, -1.),
@@ -40,7 +54,7 @@ pub fn generate() -> Scene {
 
     Scene {
         name: String::from("Playground scene - contents may change at any time"),
-        cameras: vec![camera],
+        cameras: vec![camera_main, camera_vantage],
         objects: vec![
             Box::new(ground_sphere),
             Box::new(center_sphere),

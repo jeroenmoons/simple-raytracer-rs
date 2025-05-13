@@ -4,7 +4,13 @@ use crate::scene::camera::Camera;
 use crate::{geometry::sphere::Sphere, math::vector::Point, scene::scene::Scene};
 
 pub fn generate() -> Scene {
-    let camera = Camera::new(String::from("main"), Point::origin(), 1., 4., 16. / 9.);
+    let camera = Camera::new(
+        String::from("main"),
+        Point::origin(),
+        Point::new(0., 0., -1.),
+        90.,
+        16. / 9.,
+    );
 
     let material_one = Box::from(Lambert::new(Color::new(0.15, 0.15, 0.95)));
     let center_one = Point::new(0., 0., -1.);

@@ -33,6 +33,8 @@ enum Commands {
         scene: SceneName,
         #[arg(short, long, default_value = "out/out.png")]
         output_image: String,
+        #[arg(short, long, default_value = "main")]
+        camera: String,
         #[arg(short, long, default_value_t = Algorithm::PathTracer, value_enum)]
         algorithm: Algorithm,
         #[arg(long, default_value_t = DEFAULT_WIDTH)]
@@ -69,6 +71,7 @@ enum SceneName {
     OrbWithGroundLambert,
     Playground,
     SmallOrbInFrontOfLargerOne,
+    TouchingSpheres,
 }
 
 fn main() {
@@ -80,6 +83,7 @@ fn main() {
         Some(Commands::Render {
             algorithm,
             scene,
+            camera,
             output_image,
             width,
         }) => {
@@ -87,7 +91,7 @@ fn main() {
 
             let mut renderer = select_renderer(&algorithm);
 
-            match renderer.render(&scene, String::from("main"), *width, OutputType::PNG) {
+            match renderer.render(&scene, String::from(camera), *width, OutputType::PNG) {
                 Ok(output) => output.save(output_image),
                 Err(err) => panic!("Error rendering {err}"),
             }
@@ -136,5 +140,6 @@ fn select_scene(name: SceneName) -> Scene {
         SceneName::SmallOrbInFrontOfLargerOne => {
             scenes::small_orb_in_front_of_larger_one::generate()
         }
+        SceneName::TouchingSpheres => scenes::touching_spheres::generate(),
     }
 }

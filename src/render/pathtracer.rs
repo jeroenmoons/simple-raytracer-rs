@@ -34,7 +34,7 @@ impl PathTracer {
             + ((y as f32 + offset.y()) * viewport.delta_v);
 
         // Construct a ray originating at the camera center pointed towards the pixel we are rendering
-        Ray::from_to(camera.center, pixel)
+        Ray::from_to(camera.look_from, pixel)
     }
 
     fn sample_square(&self) -> Vec3 {

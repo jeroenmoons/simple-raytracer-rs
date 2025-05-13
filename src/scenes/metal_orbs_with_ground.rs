@@ -5,7 +5,13 @@ use crate::scene::camera::Camera;
 use crate::{geometry::sphere::Sphere, math::vector::Point, scene::scene::Scene};
 
 pub fn generate() -> Scene {
-    let camera = Camera::new(String::from("main"), Point::origin(), 1., 4., 16. / 9.);
+    let camera = Camera::new(
+        String::from("main"),
+        Point::origin(),
+        Point::new(0., 0., -1.),
+        90.,
+        16. / 9.,
+    );
 
     let ground_sphere = Sphere::new(
         Point::new(0., -100.5, -1.),

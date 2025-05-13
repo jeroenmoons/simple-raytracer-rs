@@ -43,4 +43,5 @@ pub mod scenes {
     pub mod orb_with_ground_lambert;
     pub mod playground;
     pub mod small_orb_in_front_of_larger_one;
+    pub mod touching_spheres;
 }
